@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cardboard</title>
+    <link rel="stylesheet" href="{{ url_for('cardboard.static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% block content %}
+        <!-- Content goes here -->
+        {% endblock %}
+    </div>
+</body>
+</html>
