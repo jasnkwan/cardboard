@@ -1,4 +1,4 @@
-# Card Board
+# Cardboard
 
 ![Project planning](https://img.shields.io/badge/status-planning-yellow.svg)
 
