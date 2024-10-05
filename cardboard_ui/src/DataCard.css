@@ -1,0 +1,24 @@
+/* src/components/DataCard.css */
+.card-group {
+    margin-bottom: 16px;
+  }
+  
+  .card-group-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .card-group-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  
+  .card-group-item-label {
+    font-weight: bold;
+  }
+  
+  .card-group-item-value {
+    font-style: italic;
+  }
+  

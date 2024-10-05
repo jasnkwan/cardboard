@@ -2,13 +2,11 @@
 Initialize the package and setup Blueprints.
 """
 
+'''
 from flask import Blueprint
-from .blueprints.cardboard import register_routes
-# Create a Blueprint named 'cardboard'
-cardboard = Blueprint(
-    'cardboard',
-    __name__,
-    template_folder='templates'
-)
+from .cardboard import register_routes as register_cardboard
 
-register_routes(cardboard)
+# Create Blueprints
+cardboard = Blueprint('cardboard', __name__)
+register_cardboard(cardboard)
+'''
