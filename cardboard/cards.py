@@ -1,8 +1,9 @@
-from collections import deque
+"""
+Cards definition
+"""
 import json
 
-from cardboard.runnable import Runnable
-from cardboard.sockets import SocketServer, CurrentTimeProvider, SocketDataProvider
+from cardboard.sockets import SocketServer, CurrentTimeProvider
 
 
 class Card:

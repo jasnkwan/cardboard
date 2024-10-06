@@ -10,11 +10,16 @@
 		stop_server \
 		start_wsgi \
 		stop_wsgi \
-		build_vite
+		build_vite \
+		clean
 
 
-FLASK_DIR := ./cardboard
-VITE_DIR  := ./cardboard_ui
+FLASK_DIR     := ./cardboard
+VITE_DIR      := ./cardboard_ui
+VITE_DIST_DIR := $(VITE_DIR)/dist
+DIST_DIR      := ./dist
+BUILD_DIR     := ./build
+EGG_INFO_DIR  := ./cardboard.egg-info
 
 FLASK_APP  := $(FLASK_DIR)/server.py
 FLASK_HOST := localhost
@@ -29,7 +34,7 @@ STOP_FLASK_CMD := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $
 STOP_VITE_CMD  := ps aux | grep "cardboard_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
 STOP_SERVE_CMD := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
 BUILD_VITE_CMD := cd $(VITE_DIR) && npm run build
-
+BUILD_DIST_CMD := python setup.py sdist bdist_wheel
 
 start_flask:
 	@$(FLASK_CMD)
@@ -43,13 +48,13 @@ start_vite:
 stop_vite:
 	@$(STOP_VITE_CMD)
 
-start_server:
+start_server: $(VITE_DIST_DIR)
 	@$(SERVE_CMD)
 
 stop_server:
 	@$(STOP_SERVE_CMD)
 
-start_wsgi:
+start_wsgi: $(VITE_DIST_DIR)
 	@$(WSGI_CMD)
 
 stop_wsgi:
@@ -58,3 +63,14 @@ stop_wsgi:
 build_vite:
 	@$(BUILD_VITE_CMD)
 
+dist: $(VITE_DIST_DIR)
+	@$(BUILD_DIST_CMD)
+
+clean:
+	@rm -rf $(VITE_DIST_DIR)
+	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DIST_DIR)
+	@rm -rf $(EGG_INFO_DIR)
+
+$(VITE_DIST_DIR):
+	@$(BUILD_VITE_CMD)

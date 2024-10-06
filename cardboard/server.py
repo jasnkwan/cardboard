@@ -1,17 +1,10 @@
-import atexit
+"""
+Flask server
+"""
+
 from flask import Flask, send_from_directory, jsonify, Blueprint
 from cardboard import cardboard
-import os
-import asyncio
-import time
 
-'''
-def cleanup():
-    print(f"Cleanup")
-    cardboard.shutdown()
-
-atexit.register(cleanup)
-'''
 
 app = Flask(__name__, static_folder='../cardboard_ui/dist', static_url_path='/')
 
