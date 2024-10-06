@@ -1,4 +1,3 @@
 include README.md
 include LICENSE
-recursive-include cardboard/templates *
-recursive-include cardboard/static *
+recursive-include cardboard_ui/dist *

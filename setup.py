@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 setup(
     name='cardboard',
     version='0.1.0',
-    description='A Flask Jinja2 template UI library',
+    description='A React UI for data boards',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     author='Jason Kwan',
