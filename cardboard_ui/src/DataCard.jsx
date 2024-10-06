@@ -5,7 +5,7 @@ import Card from './Card';
 import './DataCard.css'; // Assuming additional styles specific to DataCard
 import axios from 'axios';
 
-const DataCard = ({ title, type, port, groups }) => {
+const DataCard = ({ title, type, url, groups }) => {
 
     const [data, setData] = useState(groups);
     const [timestamp, setTimestamp] = useState("")
@@ -21,7 +21,7 @@ const DataCard = ({ title, type, port, groups }) => {
                     //console.log("res: " + res.data);
 
                     // Create a WebSocket connection to the Python server
-                    socket.current = new WebSocket('ws://127.0.0.1:' + port);
+                    socket.current = new WebSocket(url);
 
                     // Event listener when the connection is opened
                     socket.current.addEventListener('open', function (event) {
@@ -30,10 +30,11 @@ const DataCard = ({ title, type, port, groups }) => {
 
                     // Event listener for messages received from the server
                     socket.current.addEventListener('message', function (event) {
-                        //console.log('Message from server: ', event.data);
-                        //document.getElementById('time').innerText = `Server Time: ${event.data}`;
+                        const o = JSON.parse(event.data)
+                        //console.log('Message from server: event.data.value=' + o.value);
+                        
                         //setData(event.data)
-                        setTimestamp(event.data)
+                        setTimestamp(o.value)
                     });
 
                     // Event listener for errors
@@ -56,7 +57,7 @@ const DataCard = ({ title, type, port, groups }) => {
 
 
     return (
-        <Card title={title} type={type} port={port}>
+        <Card title={title} type={type} url={url}>
             <div className="card-time">{timestamp}</div>
             <div>Groups:</div>
             {data.map((group, index) => (

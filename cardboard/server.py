@@ -1,10 +1,23 @@
+import atexit
 from flask import Flask, send_from_directory, jsonify, Blueprint
 from cardboard import cardboard
+import os
+import asyncio
+import time
+
+'''
+def cleanup():
+    print(f"Cleanup")
+    cardboard.shutdown()
+
+atexit.register(cleanup)
+'''
 
 app = Flask(__name__, static_folder='../cardboard_ui/dist', static_url_path='/')
 
 cardboard_bp = Blueprint('cardboard', __name__)
 cardboard.register_routes(cardboard_bp)
+cardboard.start()
 app.register_blueprint(cardboard_bp)
 
 @app.route('/')
@@ -20,5 +33,6 @@ def serve_static(path):
 def foo():
     return jsonify({"foo": "bar"})
 
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)

@@ -1,0 +1,49 @@
+{
+    "board": {
+        "name": "Test Board",
+        "cards": [
+            {
+                "title": "Temperature",
+                "type": "Data",
+                "socket": {"host": "localhost", "port": 6001},
+                "groups": [
+                    {
+                        "label": "Group 0",
+                        "items": [
+                            {"label": "Label 0", "value": 0.0},
+                            {"label": "Label 1", "value": 1.0}
+                        ]
+                    },
+                    {
+                        "label": "Group 1",
+                        "items": [
+                            {"label": "Label 2", "value": 2.0},
+                            {"label": "Label 3", "value": 3.0}
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Humidity",
+                "type": "Data",
+                "socket": {"host": "localhost", "port": 6002},
+                "groups": [
+                    {
+                        "label": "Group 0",
+                        "items": [
+                            {"label": "Label 0", "value": 0.0},
+                            {"label": "Label 1", "value": 1.0}
+                        ]
+                    },
+                    {
+                        "label": "Group 1",
+                        "items": [
+                            {"label": "Label 2", "value": 2.0},
+                            {"label": "Label 3", "value": 3.0}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
