@@ -1,0 +1,7 @@
+.cardboard {
+    width: 100vw;
+    height: 100vh;
+    background-color: #333333;
+    padding: 1rem 1rem;
+    box-sizing: border-box;
+}

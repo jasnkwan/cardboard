@@ -1,24 +1,38 @@
 /* src/components/DataCard.css */
 .card-group {
-    margin-bottom: 16px;
-  }
-  
-  .card-group-label {
+    display: flex;
+    flex-direction: column;
+    gap: .1em;
+    justify-self: flex-start;
+}
+
+.card-time {
+    font-size: .7rem;
+    text-align: end;
+}
+
+.card-group-label {
+    font-size: .9rem;
     font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
-  .card-group-item {
+    border-bottom: 0;
+}
+
+.card-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: .1em;
+}
+
+.card-group-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 4px;
-  }
-  
-  .card-group-item-label {
-    font-weight: bold;
-  }
-  
-  .card-group-item-value {
-    font-style: italic;
-  }
+}
+
+.card-group-item-label {
+    font-weight: normal;
+}
+
+.card-group-item-value {
+    font-style: normal;
+}
   

@@ -25,7 +25,7 @@ NODE_MODULES_DIR := $(VITE_DIR)/node_modules
 PYCACHE_DIR      := $(FLASK_DIR)/__pycache__
 
 FLASK_APP  := $(FLASK_DIR)/server.py
-FLASK_HOST := localhost
+FLASK_HOST := 127.0.0.1
 FLASK_PORT := 5000
 
 INIT_CMD        := pip install -r requirements.txt

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
-import './DataCard.css'; // Assuming additional styles specific to DataCard
+import './DataCard.css';
 import axios from 'axios';
 
 const DataCard = ({ title, type, url, groups }) => {
@@ -19,7 +19,7 @@ const DataCard = ({ title, type, url, groups }) => {
                 //const res = await axios.get("/api/start?card=" + title);
                 //if(res.data) {
                     //console.log("res: " + res.data);
-
+                    console.log("url=" + url);
                     // Create a WebSocket connection to the Python server
                     socket.current = new WebSocket(url);
 
@@ -58,12 +58,9 @@ const DataCard = ({ title, type, url, groups }) => {
 
     return (
         <Card title={title} type={type} url={url}>
-            <div className="card-time">{timestamp}</div>
-            <div>Groups:</div>
             {data.map((group, index) => (
                 <div key={index} className="card-group">
                 <div className="card-group-label">{group.label}</div>
-                
                 <div className="card-group-items">
                     {group.items.map((item, idx) => (
                     <div key={idx} className="card-group-item">
@@ -74,6 +71,7 @@ const DataCard = ({ title, type, url, groups }) => {
                 </div>
                 </div>
             ))}
+            <div className="card-time">{timestamp}</div>
         </Card>
     );
 };

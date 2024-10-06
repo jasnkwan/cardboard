@@ -7,12 +7,13 @@ from cardboard.sockets import SocketServer, CurrentTimeProvider
 
 
 class Card:
-    def __init__(self, title="Card", type="Default", host="localhost", port=None, data_provider=None):
+    def __init__(self, title="Card", type="Default", url=None, data_provider=None):
         self.title = title
         self.type = type
-        self.host = host
-        self.port = port
-        self.socket = SocketServer(host=host, port=port)
+        #self.host = host
+        #self.port = port
+        self.url = url
+        self.socket = SocketServer(url=url)
 
         self.data_provider = data_provider
         if self.data_provider is None:
@@ -42,14 +43,12 @@ class Card:
         return {
             "title": self.title,
             "type": self.type,
-            "host": self.host,
-            "port": self.port,
-            "url": f"ws://{self.socket.host}:{self.socket.port}",
+            "url": self.url,
         }
 
 class DataCard(Card):
-    def __init__(self, title="Data", host=None, port=None):
-        super().__init__(title=title, type="Data", host=host, port=port)
+    def __init__(self, title="Data", url=None):
+        super().__init__(title=title, type="Data", url=url)
         self.groups = []
 
     def to_dict(self):
@@ -58,6 +57,6 @@ class DataCard(Card):
         return o
 
 class PlotCard(Card):
-    def __init__(self, title="Plot", port=None):
-        super().__init__(title=title, type="Plot", port=port)
+    def __init__(self, title="Plot", url=None):
+        super().__init__(title=title, type="Plot", url=url)
 

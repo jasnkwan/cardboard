@@ -11,8 +11,6 @@ const Card = ({ title, type, url, children }) => {
     return (
         <div className="card">
             <div className="card-title">{title}</div>
-            <div className="card-type">{type}</div>
-            <div className="card-url">{url}</div>
             <div className="card-content">
                 {children} {/* Render custom content passed by extending components */}
             </div>

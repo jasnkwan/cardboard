@@ -6,6 +6,7 @@ import asyncio
 import datetime
 import json
 import threading
+from urllib.parse import urlparse
 import websockets
 import time
 from cardboard.runnable import Runnable
@@ -18,6 +19,24 @@ def send_current_time():
         "value": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     return data
+
+
+def parse_websocket_url(url):
+    # Parse the URL
+    parsed_url = urlparse(url)
+    
+    # Validate if the scheme is websocket (ws or wss)
+    if parsed_url.scheme not in ['ws', 'wss']:
+        raise ValueError("Invalid WebSocket URL scheme. Must be 'ws' or 'wss'.")
+    
+    # Extract hostname and port
+    hostname = parsed_url.hostname
+    port = parsed_url.port
+    
+    if not hostname or not port:
+        raise ValueError("WebSocket URL must contain both hostname and port.")
+    
+    return hostname, port
 
 
 class SocketDataProvider:
@@ -75,11 +94,10 @@ class SocketDataListener:
         pass
 
 class SocketServer(SocketDataListener):
-    def __init__(self, host="localhost", port=None, sleep=.2, debug=False):
+    def __init__(self, url=None, sleep=.2, debug=False):
         super().__init__()
-        self.host = host
-        self.port = port
-        
+
+        self.url = url
         self.sleep = sleep
         self.debug = debug
 
@@ -98,8 +116,9 @@ class SocketServer(SocketDataListener):
         # Fix the threading launch and shutdown issues in debug mode.
         try:            
             print(f"SocketServer: Starting socket...")
-            self.server = await websockets.serve(self.send, self.host, self.port)
-            print(f"WebSocket server started on ws://{self.host}:{self.port}")
+            host, port = parse_websocket_url(self.url)
+            self.server = await websockets.serve(self.send, host, port)
+            print(f"WebSocket server started on {self.url}")
         except Exception as e:
             if not self.debug:
                 if not str(e).startswith("[Errno 48]"):

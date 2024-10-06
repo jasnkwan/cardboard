@@ -3,10 +3,12 @@ Flask server
 """
 
 from flask import Flask, send_from_directory, jsonify, Blueprint
+from flask_cors import CORS
 from cardboard import cardboard
 
 
 app = Flask(__name__, static_folder='../cardboard_ui/dist', static_url_path='/')
+cors = CORS(app, origins=['*'])
 
 cardboard_bp = Blueprint('cardboard', __name__)
 cardboard.register_routes(cardboard_bp)

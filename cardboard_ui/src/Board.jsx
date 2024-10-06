@@ -3,38 +3,20 @@
  */
 import React from 'react';
 import { useEffect, useState } from 'react'
-import Card from '@/Card';
-import DataCard from '@/DataCard';
-import PlotCard from '@/PlotCard';
-import Plot from 'react-plotly.js'; // Example Plotly component
+import Column from '@/Column';
+
+//import Plot from 'react-plotly.js'; // Example Plotly component
 import axios from 'axios';
+
+import './Board.css';
 
 const Board = () => {
 
-  const [cards, setCards] = useState([]);
+  const [board, setBoard] = useState([]);
 
   useEffect(() => {
+
     /*
-    console.log("Board")
-    const socket = io("http://127.0.0.1:5000")
-    
-    socket.on("foo", function (data) {
-      console.log("on foo: ", data)
-    })
-  
-    socket.on("bar", function (data) {
-      console.log("on bar: ", data)
-    })
-
-    const getCards = async () => {
-      const res = await axios.get("http://127.0.0.1:5000/cards")
-      if(res) {
-        console.log("res.data=", res.data)
-      }
-    };
-    getCards();
-    */
-
     // fetch the card data from flask server
     const getCards = async () => {
         
@@ -47,44 +29,43 @@ const Board = () => {
         }
     }
     getCards();
+    */
+
+    // fetch the card data from flask server
+    const getBoard = async () => {
+    
+        try {
+            const res = await axios.get("http://127.0.0.1:5000/board");
+            
+            console.log("board: ", res.data.board);
+            console.log("columns: ", res.data.board.columns);
+            
+            setBoard(res.data.board);
+
+        } catch(error) {
+            console.error(error)
+        }
+    }
+    getBoard();
     
   }, [])
 
+
+
   return (
     <div className="cardboard">
+        
+        {board && board.columns && board.columns.map((column, index) => (
+            <Column key={index} {...column} />
+        ))}
+        
+        {/*
         {cards.map((cardData, index) => (            
             <DataCard key={index} {...cardData} />
         ))}
+        */}
     </div>
   )
-
-  /*
-  const dataGroups = [
-    {
-      label: "Group 1",
-      items: [
-        { label: "Label 1", value: "Value 1" },
-        { label: "Label 2", value: "Value 2" },
-      ]
-    },
-    {
-      label: "Group 2",
-      items: [
-        { label: "Label 3", value: "Value 3" },
-        { label: "Label 4", value: "Value 4" },
-      ]
-    }
-  ];
-
-  return (
-    <div>
-      <h1>Dashboard</h1>
-
-      <DataCard title="Data Card" groups={dataGroups} />
-      <PlotCard title="Plot Card" plotComponent={<Plot data={[{x: [1, 2, 3], y: [2, 6, 3]}]} layout={{width: 320, height: 240, title: 'A Plot'}} />} />
-    </div>
-  );
-  */
 };
 
 export default Board;
