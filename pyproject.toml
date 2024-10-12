@@ -21,7 +21,8 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
-homepage = "https://github.com/jasnkwan/cardboard"
+Homepage = "https://github.com/jasnkwan/cardboard"
+Repository = "https://github.com/jasnkwan/cardboard.git"
 
 [tool.setuptools]
 packages = ["cardboard"]
