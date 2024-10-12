@@ -2,32 +2,20 @@
 Flask server
 """
 
-from flask import Flask, send_from_directory, jsonify, Blueprint
+
+from flask import Flask
 from flask_cors import CORS
-from cardboard import cardboard
+
+from cardboard.cardboard import cardboard_blueprint
 
 
-app = Flask(__name__, static_folder='../cardboard_ui/dist', static_url_path='/')
-cors = CORS(app, origins=['*'])
+app = Flask(__name__)
+cors = CORS(app, origins=['*', 'http://localhost:5173', "http://127.0.0.1:5173"])
 
-cardboard_bp = Blueprint('cardboard', __name__)
-cardboard.register_routes(cardboard_bp)
-cardboard.start()
-app.register_blueprint(cardboard_bp)
-
-@app.route('/')
-def serve_react_app():
-    return send_from_directory(app.static_folder, 'index.html')
-
-# Serve static files (JS, CSS, etc.)
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory(app.static_folder, path)
-
-@app.route('/foo')
-def foo():
-    return jsonify({"foo": "bar"})
+app.register_blueprint(cardboard_blueprint)
 
 
-if __name__ == '__main__':
+
+if __name__ == '__main__': 
     app.run(host="127.0.0.1", port=5000, debug=True)
+    #cardboard.shutdown()

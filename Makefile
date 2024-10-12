@@ -30,14 +30,15 @@ FLASK_PORT := 5000
 
 INIT_CMD        := pip install -r requirements.txt
 NPM_INSTALL_CMD := cd $(VITE_DIR) && npm install
-FLASK_CMD       := FLASK_APP=$(FLASK_APP) flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
+FLASK_CMD       := FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
 SERVE_CMD       := python -m cardboard.server
-WSGI_CMD        := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) cardbard.wsgi:app
+WSGI_CMD        := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) cardboard.wsgi:app
 VITE_CMD        := cd $(VITE_DIR) && npm run dev
 
-STOP_FLASK_CMD := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
+STOP_FLASK_CMD := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
+STOP_SERVE_CMD := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
+STOP_WSGI_CMD  := px aux | grep "cardboard.wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 /dev/null 2>&1
 STOP_VITE_CMD  := ps aux | grep "cardboard_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
-STOP_SERVE_CMD := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
 BUILD_VITE_CMD := cd $(VITE_DIR) && npm run build
 BUILD_DIST_CMD := python setup.py sdist bdist_wheel
 

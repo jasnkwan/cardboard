@@ -1,13 +1,15 @@
-// src/components/DataCard.js
 import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import Slider from '@mui/material/Slider';
 
-import './DataCard.css';
+import './FormCard.css';
 
+const FormCard = ({ title, type, url, groups }) => {
 
-const DataCard = ({ title, type, url, groups }) => {
+    const [sliderValues, setSliderValues] = useState({})
 
     const [data, setData] = useState(groups);
     const [timestamp, setTimestamp] = useState("");
@@ -37,7 +39,7 @@ const DataCard = ({ title, type, url, groups }) => {
                 // Event listener for messages received from the server
                 socket.current.addEventListener('message', function (event) {
                     const o = JSON.parse(event.data)
-                    //console.log(title + ': Message from server: label=' + o.label + ', value=' + o.value);
+                    //console.log(title + ': Message from server: event.data.value=' + o.value);
                     
                     //setData(event.data)
                     if(o.label == "Current time") {
@@ -73,7 +75,7 @@ const DataCard = ({ title, type, url, groups }) => {
                 startSocket()
                 
             } catch(e) {
-                console.error("DataCard.startCard(): Error: " + e);
+                console.error("FormCard.startCard(): Error: " + e);
             }
         }
 
@@ -86,7 +88,7 @@ const DataCard = ({ title, type, url, groups }) => {
                     socket.current = null;
                 }
             } catch(e) {
-                console.error("DataCard.stopCard(): Error: " + e);
+                console.error("FormCard.stopCard(): Error: " + e);
             }
         }
         
@@ -116,16 +118,87 @@ const DataCard = ({ title, type, url, groups }) => {
     }, []);
 
 
+
+    const handleSliderChange = (e, val) => {
+        const el = e.target
+        const label = el.name
+
+        console.log("handleSliderChange: el=" + label + ", value=" + val)
+
+        setSliderValues((prevValues) => ({
+            ...prevValues,   // Keep other slider values unchanged
+            [label]: val,    // Update the current slider's value
+        }));
+
+        // send the slider value to the server socket
+        if(socket.current) {
+            socket.current.send(JSON.stringify({"card": title, "slider": label, "value": val}))
+        }
+    };
+
+
+    const handleButtonPressed = (e, val) => {
+        const el = e.target;
+        const label = el.name;
+        console.log("handleButtonPressed: el=" + label + ", value=" + val);
+
+        if(socket.current) {
+            socket.current.send(JSON.stringify({"card": title, "button": label, "value": 1}))
+        }
+    }
+
+
+    const handleButtonReleased = (e, val) => {
+        const el = e.target;
+        const label = el.name;
+        console.log("handleButtonReleased: el=" + label + ", value=" + val);
+
+        if(socket.current) {
+            socket.current.send(JSON.stringify({"card": title, "button": label, "value": 0}))
+        }
+    }
+
+
     return (
         <Card title={title} type={type} url={url}>
             {data.map((group, index) => (
-                <div key={index} className="card-group">
-                <div className="card-group-label">{group.label}</div>
-                <div className="card-group-items">
+                <div key={index} className="form-card-group">
+                <div className="form-card-group-label">{group.label}</div>
+                <div className="form-card-group-items">
                     {group.items.map((item, idx) => (
-                    <div key={idx} className="card-group-item">
-                        <div className="card-group-item-label">{item.label}</div>
-                        <div className="card-group-item-value">{item.value}</div>
+                    <div key={idx} className="form-card-group-item">
+                        {item.input.type == "slider" && <div className="form-card-group-item-header">
+                            <div className="form-card-group-item-label">{item.label}</div>
+                            <div className="form-card-group-item-value">{sliderValues[item.label] || item.input.defaultValue}</div>
+                        </div>}
+                        {item.input.type == "slider" && 
+                            <Slider defaultValue={item.input.defaultValue} 
+                                    min={item.input.minValue} 
+                                    max={item.input.maxValue} 
+                                    step={item.input.step} 
+                                    onChange={handleSliderChange}
+                                    size="normal"
+                                    name={item.label}      
+                                    label={item.label}                              
+                                    sx={{
+                                        '& .MuiSlider-thumb': {
+                                            width: 12, // Customize thumb width
+                                            height: 12, // Customize thumb height
+                                        },
+                                        margin: 0,
+                                        padding: 0,
+                                    }}
+                            />}
+                        {item.input.type == "button" &&
+                            <Button name={item.label}
+                                    label={item.label}
+                                    variant="contained"
+                                    size="small"
+                                    onMouseDown={handleButtonPressed}
+                                    onMouseUp={handleButtonReleased}
+                                    style={{ fontSize: '.7em' }}>
+                                {item.label}
+                            </Button>}
                     </div>
                     ))}
                 </div>
@@ -133,7 +206,7 @@ const DataCard = ({ title, type, url, groups }) => {
             ))}
             <div className="card-time">{timestamp}</div>
         </Card>
-    );
+    )
 };
 
-export default DataCard;
+export default FormCard;

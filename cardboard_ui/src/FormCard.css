@@ -1,40 +1,44 @@
-/* src/components/DataCard.css */
-.card-group {
+.form-card-group {
     display: flex;
     flex-direction: column;
     gap: .1em;
     justify-self: flex-start;
 }
 
-.card-time {
+.form-card-time {
     font-size: .7rem;
     text-align: end;
 }
 
-.card-group-label {
+.form-card-group-label {
     font-size: .9rem;
     font-weight: bold;
-    border-bottom: 0;
+    margin-bottom: .4rem;
 }
 
-.card-group-items {
+.form-card-group-items {
     display: flex;
     flex-direction: column;
-    gap: .1em;
+    gap: .7rem;
 }
 
-.card-group-item {
+.form-card-group-item {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+
+.form-card-group-item-header {
     display: flex;
     justify-content: space-between;
 }
 
-.card-group-item-label {
+.form-card-group-item-label {
     font-size: .8rem;
     font-weight: normal;
 }
 
-.card-group-item-value {
+.form-card-group-item-value {
     font-size: .8rem;
     font-style: normal;
 }
-  

@@ -3,38 +3,27 @@ Cards definition
 """
 import json
 
-from cardboard.sockets import SocketServer, CurrentTimeProvider
+from cardboard.sockets import WebsocketServer
 
 
+"""
+Base class for cards
+"""
 class Card:
-    def __init__(self, title="Card", type="Default", url=None, data_provider=None):
+    def __init__(self, title="Card", type="Default", url=None):
         self.title = title
         self.type = type
-        #self.host = host
-        #self.port = port
         self.url = url
-        self.socket = SocketServer(url=url)
-
-        self.data_provider = data_provider
-        if self.data_provider is None:
-            print(f"Starting default current time provider...")
-            self.data_provider = CurrentTimeProvider(listener=self.socket)
-            self.data_provider.start()
-
-    def set_data_provider(self, provider):
-        self.data_provider = provider
+        self.socket = WebsocketServer(url=url)
 
     def start(self):
         self.socket.start()
 
     def stop(self):
         self.socket.stop()
-        if self.data_provider is not None:
-            self.data_provider.stop()
-        print(f"cards.stopped")
 
     def is_running(self):
-        return False
+        return self.socket.is_running()
 
     def to_json(self):
         return json.dumps(self.to_dict)
@@ -46,6 +35,10 @@ class Card:
             "url": self.url,
         }
 
+
+"""
+Simple two column data table presentation card
+"""
 class DataCard(Card):
     def __init__(self, title="Data", url=None):
         super().__init__(title=title, type="Data", url=url)
@@ -56,7 +49,24 @@ class DataCard(Card):
         o["groups"] = self.groups
         return o
 
+
+"""
+Plot card for displaying a Plotly plot
+"""
 class PlotCard(Card):
     def __init__(self, title="Plot", url=None):
         super().__init__(title=title, type="Plot", url=url)
 
+
+"""
+Form card for supplying data from client to server
+"""
+class FormCard(Card):
+    def __init__(self, title="Form", url=None):
+        super().__init__(title=title, type="Form", url=url)
+        self.groups = []
+
+    def to_dict(self):
+        o = super().to_dict()
+        o["groups"] = self.groups
+        return o

@@ -2,6 +2,20 @@
     "board": {
         "name": "Weather Board",
         "layout": "column",
+        "palette": {
+            "primary": {
+              "light": "#BAE6FD",
+              "main": "#14648C",
+              "dark": "#082F49",
+              "contrastText": "#fff"
+            },
+            "secondary": {
+              "light": "#ff7961",
+              "main": "#f44336",
+              "dark": "#ba000d",
+              "contrastText": "#000"
+            }
+          },
         "columns": [
             {
                 "name": "Weather",
@@ -9,7 +23,6 @@
                     {
                         "title": "Temperature",
                         "type": "Data",
-                        "column": "Weather",
                         "url": "ws://localhost:6001",
                         "groups": [
                             {
@@ -31,7 +44,6 @@
                     {
                         "title": "Humidity",
                         "type": "Data",
-                        "column": "Weather",
                         "url": "ws://localhost:6002",
                         "groups": [
                             {
@@ -58,6 +70,154 @@
                         ]
                     }
                 ]   
+            },
+            {
+                "name": "Form",
+                "stretch": true,
+                "cards": [
+                    {
+                        "title": "Slider Inputs",
+                        "type": "Form",
+                        "url": "ws://localhost:6003",
+                        "groups": [
+                            {
+                                "label": "Sliders",
+                                "items": [
+                                    {
+                                        "label": "Slider 0", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    },
+                                    {
+                                        "label": "Slider 1", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    },
+                                    {
+                                        "label": "Slider 2", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    },
+                                    {
+                                        "label": "Slider 3", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    },
+                                    {
+                                        "label": "Slider 4", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    },
+                                    {
+                                        "label": "Slider 5", 
+                                        "input": {
+                                            "type": "slider",
+                                            "defaultValue": 0,
+                                            "minValue": 0,
+                                            "maxValue": 100,
+                                            "step": 1
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Button Inputs",
+                        "type": "Form",
+                        "url": "ws://localhost:6004",
+                        "groups": [
+                            {
+                                "label": "Buttons",
+                                "items": [
+                                    {
+                                        "label": "Button 0",
+                                        "input": {
+                                            "type": "button"
+                                        }
+
+                                    },
+                                    {
+                                        "label": "Button 1",
+                                        "input": {
+                                            "type": "button"
+                                        }
+
+                                    },
+                                    {
+                                        "label": "Button 2",
+                                        "input": {
+                                            "type": "button"
+                                        }
+
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Plots",
+                "stretch": true,
+                "cards": [
+                    {
+                        "title": "Plot",
+                        "type": "Plot",
+                        "url": "ws://localhost:6005",
+                        "plot_data": {
+                            "x": [0,2,3,20000],
+                            "y": [0,0,0,0],
+                            "name": "Magnitude",
+                            "type": "scatter",
+                            "mode": "lines",
+                            "line": { "color": "rgba(20, 100, 140, 200)"}
+                        },
+                        "plot_layout": {
+                            "xaxis": { "title": "Frequency (Hz)", "range": [0, 20000], "type": "log" },
+                            "yaxis": { "range": [-50, 50] },
+                            "paper_bgcolor": "#fcfcfc",
+                            "plot_bgcolor": "#fcfcfc",
+                            "margin": {"t": 10, "l": 30, "b": 40, "r": 20},
+                            "height": "auto",
+                            "showlegend": false,
+                            "legend": {
+                                "x": 1,
+                                "y": 1,
+                                "xanchor": "right"
+                            }
+                        },
+                        "plot_opts": {
+                            "responsive": true,
+                            "displayModeBar": false
+                        }
+                    }
+                ]
             }
         ]
     }
