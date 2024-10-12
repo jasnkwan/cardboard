@@ -2,6 +2,8 @@
 
 
 .card {
+    display: flex;
+    flex-direction: column;
     background-color: #fefefe;
     border: 1px solid #ccc;    
     border-radius: 8px;
@@ -20,6 +22,7 @@
 .card-content {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     justify-items: flex-start;
     box-sizing: border-box;
     gap: .5rem;
@@ -28,3 +31,6 @@
     padding: 0 0;
 }
   
+.grow-card {
+    height: 100%;
+}

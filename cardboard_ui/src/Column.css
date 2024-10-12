@@ -6,3 +6,7 @@
     box-sizing: border-box;
     min-width: 160px;
 }
+
+.grow-column {
+    flex-grow: 1;    
+}

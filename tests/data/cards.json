@@ -184,12 +184,13 @@
             },
             {
                 "name": "Plots",
-                "stretch": true,
+                "grow": true,
                 "cards": [
                     {
                         "title": "Plot",
                         "type": "Plot",
                         "url": "ws://localhost:6005",
+                        "grow": true,
                         "plot_data": {
                             "x": [0,2,3,20000],
                             "y": [0,0,0,0],
@@ -204,7 +205,8 @@
                             "paper_bgcolor": "#fcfcfc",
                             "plot_bgcolor": "#fcfcfc",
                             "margin": {"t": 10, "l": 30, "b": 40, "r": 20},
-                            "height": "auto",
+                            "height": "100%",
+                            "autosize": true,
                             "showlegend": false,
                             "legend": {
                                 "x": 1,

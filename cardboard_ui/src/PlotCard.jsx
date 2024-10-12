@@ -8,13 +8,16 @@ import Plot from 'react-plotly.js';
 import './PlotCard.css'; // Assuming additional styles specific to PlotCard
 
 
-const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts }) => {
+const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow }) => {
 
     const [data, setData] = useState(plot_data);
     const [timestamp, setTimestamp] = useState("");
 
     const socket = useRef(null);
     const timer = useRef(null);
+
+    const classNames = grow==true ? "plot-container grow-plot-container" : "plot-container";
+    console.log("grow=" + grow + ", classNames=" + classNames)
 
     // Fix the range for log scale
     if(plot_layout.xaxis.type && plot_layout.xaxis.type == "log" && plot_layout.xaxis.range) {
@@ -123,9 +126,9 @@ const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts }) => {
 
 
     return (
-        <Card title={title}>
+        <Card title={title} style={{ }}>
         <div className="plot-container">
-            <Plot data={[plot_data]} layout={plot_layout} config={plot_opts} />
+            <Plot data={[plot_data]} layout={plot_layout} config={plot_opts} style={{ width: "100%", height: "100%" }} />
         </div>
         </Card>
     );

@@ -1,8 +1,9 @@
 /* src/components/PlotCard.css */
 .plot-container {
     width: 100%;
-    height: 30%;
-    /*background-color: #fcfcfc;
-    border: 1px solid #fcfcfc;*/
-  }
+    height: 100%;
+}
   
+.grow-plot-container {
+    flex-grow: 1;
+}

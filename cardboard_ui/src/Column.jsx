@@ -10,9 +10,12 @@ import PlotCard from '@/PlotCard';
 
 import "./Column.css"
 
-const Column = ({ cards }) => {
+const Column = ({ cards, grow }) => {
+
+    const classNames = grow==true ? "column grow-column" : "column";
+    console.log("grow=" + grow + ", classNames=" + classNames)
     return (
-        <div className="column">
+        <div className={classNames}>
             {cards.map((card, index) => (
                 card.type=="Data" && <DataCard key={index} {...card} /> ||
                 card.type=="Form" && <FormCard key={index} {...card} /> ||
