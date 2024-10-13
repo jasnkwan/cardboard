@@ -8,6 +8,13 @@
   </head>
   <body>
     <div id="cardboard-root"></div>
+    <script>
+      let _CARDBOARD_SERVER = "{{cardboard_server}}";
+      if(!_CARDBOARD_SERVER || _CARDBOARD_SERVER == "{{cardboard_server}}" || _CARDBOARD_SERVER == "") {
+        _CARDBOARD_SERVER = "http://127.0.0.1:5000";
+      }
+      const CARDBOARD_SERVER = _CARDBOARD_SERVER;
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

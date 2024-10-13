@@ -38,17 +38,13 @@ const Board = () => {
     // fetch the card data from flask server
     const getBoard = async () => {
         try {
-
-            const res = await axios.get("http://127.0.0.1:5000/board",             {
+            const req = CARDBOARD_SERVER + "/board"            
+            const res = await axios.get(req, {
                 headers: {
                   'Access-Control-Allow-Origin': '*',
                   // Other headers as needed
                 }
             });
-                        
-            //if(res.data.board.palette) {
-              //theme = createTheme({"palette": res.data.board.palette})
-            //}
 
             setBoard(res.data.board);
 

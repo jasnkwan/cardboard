@@ -1,11 +1,15 @@
-from flask import Blueprint, jsonify, send_from_directory, request
+from flask import Blueprint, jsonify, send_from_directory, render_template, current_app, request
 from cardboard.cardboard import start_card, stop_card
 from cardboard import cardboard
 import importlib.resources as pkg_resources
+import os
 
+# Load environment variables
+CARDBOARD_FLASK_HOST = os.environ.get("CARDBOARD_FLASK_HOST", default="127.0.0.1")
+CARDBOARD_FLASK_PORT = int(os.environ.get("CARDBOARD_FLASK_PORT", default="5000"))
+CARDBOARD_STATIC_DIR = os.environ.get("CARDBOARD_STATIC_DIR", default="resources")
 
-
-cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  static_folder='resources', static_url_path='/')
+cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  template_folder=CARDBOARD_STATIC_DIR, static_folder=CARDBOARD_STATIC_DIR, static_url_path='/')
 
 
 def get_assets():
@@ -39,7 +43,8 @@ def serve_react_app():
     """
     Serve index.html from vite dist
     """
-    return send_from_directory(cardboard_blueprint.static_folder, 'index.html')
+    #return send_from_directory(cardboard_blueprint.static_folder, 'index.html')
+    return render_template('index.html', cardboard_server=f"{request.scheme}://{CARDBOARD_FLASK_HOST}:{CARDBOARD_FLASK_PORT}")
 
 
 @cardboard_blueprint.route('/<path:path>')

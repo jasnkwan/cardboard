@@ -15,7 +15,7 @@ import os
 app = Flask(__name__)
 cors = CORS(app, origins=['*', 'http://localhost:5173', "http://127.0.0.1:5173"])
 
-#cardboard_blueprint.static_folder = "./resources"
+
 app.register_blueprint(cardboard_blueprint)
 
 # Load the board configuration

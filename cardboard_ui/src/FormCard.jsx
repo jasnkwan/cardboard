@@ -70,7 +70,8 @@ const FormCard = ({ title, type, url, groups }) => {
  
         const startCard = async() => {
             try {
-                const startRes = await axios.get("http://127.0.0.1:5000/start?card="+title+"&type="+type+"&url="+encodeURIComponent(url));
+                const req = CARDBOARD_SERVER + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);   
+                const startRes = await axios.get(req);
                 console.log("start res=" + JSON.stringify(startRes.data))
                 startSocket()
                 
@@ -81,7 +82,8 @@ const FormCard = ({ title, type, url, groups }) => {
 
         const stopCard = async() => {
             try {
-                const stopRes = await axios.get("http://127.0.0.1:5000/stop?card="+title);
+                const req = CARDBOARD_SERVER + "/stop?card=" + title;
+                const stopRes = await axios.get(req);
                 console.log("stop res=" + JSON.stringify(stopRes.data));
                 if(socket.current) {
                     socket.current.close();

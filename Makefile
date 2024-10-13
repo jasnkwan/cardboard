@@ -42,13 +42,13 @@ VITE_CMD         := cd $(VITE_DIR) && npm run dev
 
 STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
 STOP_SERVE_CMD   := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
-STOP_WSGI_CMD    := px aux | grep "cardboard.wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 /dev/null 2>&1
+STOP_WSGI_CMD    := ps aux | grep "cardboard.wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -2 > /dev/null 2>&1
 STOP_VITE_CMD    := ps aux | grep "cardboard_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
 BUILD_VITE_CMD   := cd $(VITE_DIR) && npm run build
 FREEZE_CMD       := pip freeze > requirements.txt
 DEPENDS_CMD      := python build_utils/update_dependencies.py
 SETUP_CMD        := python setup.py sdist bdist_wheel
-COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_DIR)/resources
+COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
 BUILD_DIST_CMD   := python -m build
 TEST_UPLOAD_CMD  := twine upload --verbose --repository testpypi dist/*
 
@@ -102,7 +102,7 @@ stop_server:
 #
 # Start the Gunicorn WSGI server
 #
-start_wsgi: $(VITE_DIST_DIR)
+start_wsgi: $(FLASK_RES_DIR)
 	@$(WSGI_CMD)
 
 #
@@ -148,6 +148,7 @@ clean_vite:
 # Remove Python package build files
 #
 clean_dist:
+	@rm -rf $(FLASK_RES_DIR)
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(DIST_DIR)
 	@rm -rf $(EGG_INFO_DIR)
@@ -169,3 +170,9 @@ clobber: clean
 #
 $(VITE_DIST_DIR):
 	@$(BUILD_VITE_CMD)
+
+#
+# Copy vite build dir to the Flask res directory
+#
+$(FLASK_RES_DIR): $(VITE_DIST_DIR)
+	@$(COPY_ASSETS_CMD)
