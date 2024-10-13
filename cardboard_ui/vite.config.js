@@ -9,7 +9,6 @@ export default defineConfig({
       //reactStrictMode: false,
     }
   )],
-  //*
   server: {
     host: "127.0.0.1",
     proxy: {
@@ -20,7 +19,9 @@ export default defineConfig({
       }
     }
   },
-  //*/
+  //build: {
+  //  outDir: '../cardboard/resources'
+  //},
   resolve: {
     alias: {
       '@': '/src',

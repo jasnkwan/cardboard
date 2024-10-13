@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import Board from './Board.jsx'
 import './index.css'
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('cardboard-root')).render(
   <StrictMode>
     <Board />
   </StrictMode>,
