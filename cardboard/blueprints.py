@@ -1,12 +1,40 @@
 from flask import Blueprint, jsonify, send_from_directory, request
 from cardboard.cardboard import start_card, stop_card
 from cardboard import cardboard
+import importlib.resources as pkg_resources
 
 
-cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  static_folder='../cardboard_ui/dist', static_url_path='/')
+
+cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  static_folder='resources', static_url_path='/')
 
 
-@cardboard_blueprint.route('/')
+def get_assets():
+    """
+    Load and return the cardboard .js and .css assets from the cardboard index.html
+    So that they may be included in parent flask app index html or passed to
+    Flask templates.  The returned file paths are relative to the resources/ directory.
+    """
+    # Load the package and list files in the specified directory
+    package = pkg_resources.files("cardboard") / "resources/assets"
+    
+    files_dict = {'js': None, 'css': None}
+    
+    for file in package.iterdir():
+        # Convert the file to a string to get the filename
+        filename = str(file.name)
+        
+        # Check if the file is a .js file
+        if filename.endswith('.js'):
+            files_dict['js'] = f"/assets/{filename}"
+
+        # Check if the file is a .css file
+        elif filename.endswith('.css'):
+            files_dict['css'] = f"/assets/{filename}"
+
+    return files_dict
+
+
+@cardboard_blueprint.route('/cardboard')
 def serve_react_app():
     """
     Serve index.html from vite dist
