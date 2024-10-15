@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import Column from '@/Column';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 
 import axios from 'axios';
 
