@@ -2,8 +2,8 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
 import axios from 'axios';
-import Button from '@mui/material/Button';
-import Slider from '@mui/material/Slider';
+//import Button from '@mui/material/Button';
+//import Slider from '@mui/material/Slider';
 
 import './FormCard.css';
 
@@ -121,9 +121,10 @@ const FormCard = ({ title, type, url, groups }) => {
 
 
 
-    const handleSliderChange = (e, val) => {
+    const handleSliderChange = (e) => {
         const el = e.target
         const label = el.name
+        const val = el.value
 
         console.log("handleSliderChange: el=" + label + ", value=" + val)
 
@@ -139,9 +140,10 @@ const FormCard = ({ title, type, url, groups }) => {
     };
 
 
-    const handleButtonPressed = (e, val) => {
+    const handleButtonPressed = (e) => {
         const el = e.target;
         const label = el.name;
+        const val = 1;
         console.log("handleButtonPressed: el=" + label + ", value=" + val);
 
         if(socket.current) {
@@ -150,9 +152,10 @@ const FormCard = ({ title, type, url, groups }) => {
     }
 
 
-    const handleButtonReleased = (e, val) => {
+    const handleButtonReleased = (e) => {
         const el = e.target;
         const label = el.name;
+        const val = 0;
         console.log("handleButtonReleased: el=" + label + ", value=" + val);
 
         if(socket.current) {
@@ -174,33 +177,11 @@ const FormCard = ({ title, type, url, groups }) => {
                             <div className="form-card-group-item-value">{sliderValues[item.label] || item.input.defaultValue}</div>
                         </div>}
                         {item.input.type == "slider" && 
-                            <Slider defaultValue={item.input.defaultValue} 
-                                    min={item.input.minValue} 
-                                    max={item.input.maxValue} 
-                                    step={item.input.step} 
-                                    onChange={handleSliderChange}
-                                    size="normal"
-                                    name={item.label}      
-                                    label={item.label}                              
-                                    sx={{
-                                        '& .MuiSlider-thumb': {
-                                            width: 12, // Customize thumb width
-                                            height: 12, // Customize thumb height
-                                        },
-                                        margin: 0,
-                                        padding: 0,
-                                    }}
-                            />}
+                            <input className="range range-primary range-xs" type="range" min={item.input.minValue} max={item.input.maxValue} step={item.input.step} name={item.label} label={item.label} defaultValue={item.input.defaultValue} onChange={handleSliderChange}/>
+                        }
                         {item.input.type == "button" &&
-                            <Button name={item.label}
-                                    label={item.label}
-                                    variant="contained"
-                                    size="small"
-                                    onMouseDown={handleButtonPressed}
-                                    onMouseUp={handleButtonReleased}
-                                    style={{ fontSize: '.7em' }}>
-                                {item.label}
-                            </Button>}
+                            <button className="btn btn-primary btn-sm" onMouseDown={handleButtonPressed} onMouseUp={handleButtonReleased}>{item.label}</button>
+                        }
                     </div>
                     ))}
                 </div>
