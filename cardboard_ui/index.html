@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Card Board</title>
   </head>
-  <body>
-    <div id="cardboard-root" data-theme="cardboard"></div>
+  <body data-theme="cardboard">
+    <div id="cardboard-root"></div>
     <script>
       let _CARDBOARD_SERVER = "{{cardboard_server}}";
       if(!_CARDBOARD_SERVER || _CARDBOARD_SERVER == "{{cardboard_server}}" || _CARDBOARD_SERVER == "") {

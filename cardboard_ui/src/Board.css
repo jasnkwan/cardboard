@@ -4,7 +4,7 @@
     gap: 1em;
     width: 100vw;
     height: auto;
-    background-color: #333333;
+    background: transparent;
     padding: 1rem 1rem;
     box-sizing: border-box;
 }

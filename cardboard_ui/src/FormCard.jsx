@@ -2,8 +2,6 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
 import axios from 'axios';
-//import Button from '@mui/material/Button';
-//import Slider from '@mui/material/Slider';
 
 import './FormCard.css';
 
@@ -163,7 +161,28 @@ const FormCard = ({ title, type, url, groups }) => {
         }
     }
 
+    const updateSliderBackground = (e) => {
+        let slider = e.target;
+        const value = slider.value;
+        const percentage = (value - 50.) * 2.;
+        const r = 4.0; // matches half the thumb width/height. 
+        
+        //const cutColor = tailwindConfig.theme.extend.colors.sky(900);
+        //const boostColor = tailwindConfig.theme.extend.colors.sky(900);
+        const cutColor = "#14648C";
+        const boostColor = "#14648C";
 
+        if(value >= 50) {
+            const x = value - (r)*percentage/100.;
+            slider.style.background = `linear-gradient(to right, transparent 0%, transparent 50%, ${boostColor} 50%, ${boostColor} ${x}%, transparent ${x}%, transparent 100%)`;
+        } else {
+            const x = value - (r)*percentage/100.;
+            slider.style.background = `linear-gradient(to right, transparent 0%, transparent ${x}%, ${cutColor} ${x}%, ${cutColor} 50%, transparent 50%, transparent 100%)`;
+        }
+        
+      }
+
+    const sliderClasses = "range range-xs [--range-shdw:transparent] h-[16px] bg-base-100 rangethumb"
     return (
         <Card title={title} type={type} url={url}>
             {data.map((group, index) => (
@@ -177,7 +196,7 @@ const FormCard = ({ title, type, url, groups }) => {
                             <div className="form-card-group-item-value">{sliderValues[item.label] || item.input.defaultValue}</div>
                         </div>}
                         {item.input.type == "slider" && 
-                            <input className="range range-primary range-xs" type="range" min={item.input.minValue} max={item.input.maxValue} step={item.input.step} name={item.label} label={item.label} defaultValue={item.input.defaultValue} onChange={handleSliderChange}/>
+                            <input className={sliderClasses} type="range" min={item.input.minValue} max={item.input.maxValue} step={item.input.step} name={item.label} label={item.label} defaultValue={item.input.defaultValue} onChange={handleSliderChange}/>
                         }
                         {item.input.type == "button" &&
                             <button className="btn btn-primary btn-sm" onMouseDown={handleButtonPressed} onMouseUp={handleButtonReleased}>{item.label}</button>
