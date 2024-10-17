@@ -199,7 +199,7 @@ const FormCard = ({ title, type, url, groups }) => {
                             <input className={sliderClasses} type="range" min={item.input.minValue} max={item.input.maxValue} step={item.input.step} name={item.label} label={item.label} defaultValue={item.input.defaultValue} onChange={handleSliderChange}/>
                         }
                         {item.input.type == "button" &&
-                            <button className="btn btn-primary btn-sm" onMouseDown={handleButtonPressed} onMouseUp={handleButtonReleased}>{item.label}</button>
+                            <button className="btn btn-primary btn-sm rounded-md text-white" onMouseDown={handleButtonPressed} onMouseUp={handleButtonReleased}>{item.label}</button>
                         }
                     </div>
                     ))}

@@ -12,7 +12,7 @@
 }
 
 .card-group-label {
-    font-size: .9rem;
+    font-size: .8rem !important;
     font-weight: bold;
     border-bottom: 0;
 }
@@ -29,12 +29,12 @@
 }
 
 .card-group-item-label {
-    font-size: .8rem;
+    font-size: .8rem !important;
     font-weight: normal;
 }
 
 .card-group-item-value {
-    font-size: .8rem;
+    font-size: .8rem !important;
     font-style: normal;
 }
   
