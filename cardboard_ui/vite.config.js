@@ -14,6 +14,9 @@ export default defineConfig({
       }
     }
   },
+  build: {
+    manifest: true,
+  },
   resolve: {
     alias: {
       '@': '/src',
