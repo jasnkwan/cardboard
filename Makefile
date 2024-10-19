@@ -23,6 +23,7 @@ FLASK_DIR        := ./cardboard
 VITE_DIR         := ./cardboard_ui
 FLASK_RES_DIR    := $(FLASK_DIR)/resources
 VITE_DIST_DIR    := $(VITE_DIR)/dist
+VITE_SRC_DIR     := $(VITE_DIR)/src
 DIST_DIR         := ./dist
 BUILD_DIR        := ./build
 EGG_INFO_DIR     := ./cardboard.egg-info
@@ -49,6 +50,7 @@ FREEZE_CMD       := pip freeze > requirements.txt
 DEPENDS_CMD      := python build_utils/update_dependencies.py
 SETUP_CMD        := python setup.py sdist bdist_wheel
 COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
+COPY_REACT_CMD   := cp -r $(VITE_SRC_DIR)/* $(FLASK_RES_DIR)/.
 BUILD_DIST_CMD   := python -m build
 TEST_UPLOAD_CMD  := twine upload --verbose --repository testpypi dist/*
 
@@ -129,6 +131,7 @@ depends:
 #
 dist: $(VITE_DIST_DIR)
 	@$(COPY_ASSETS_CMD)
+	@$(COPY_REACT_CMD)
 	@$(BUILD_DIST_CMD)
 	@rm -rf $(FLASK_RES_DIR)
 
