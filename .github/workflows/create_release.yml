@@ -81,9 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
-          # Upload Python artifacts
-          gh release upload $TAG_NAME dist/* --clobber
-          # Upload npm build artifacts
-          gh release upload $TAG_NAME cardboard_ui/dist/* --clobber
+          # Upload build artifacts
+          gh release upload $TAG_NAME $(ls dist) --clobber
 
       # Step 9: Publish to PyPi and NPM registries (TODO)
