@@ -74,7 +74,7 @@ jobs:
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
           VERSION_NAME=$(cat VERSION)
-          gh release create $TAG_NAME --title "Release $VERSION_NAME" --notes "Automated release for version $VERSION_NAME" --draft
+          gh release create $TAG_NAME --title "Release $VERSION_NAME" --notes "Release for version $VERSION_NAME"
 
       # Step 8: Upload Python and npm build artifacts to the release
       - name: Upload release artifacts
