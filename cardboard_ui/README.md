@@ -1,8 +1,7 @@
-# React + Vite
+# Cardboard UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React front end to the cardboard Python Flask server: https://github.com/jasnkwan/cardboard.git
 
-Currently, two official plugins are available:
+Each card on the board manages its own WebSocket connection to the server to be abe to handle multiple high bandwidth data sources such as audio or high frequency sensor data which could otherwise saturate a single multiplexed Flask SocketIO connection.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+While this project was intended for use on localhost, it should be able to be deployed to the web as well, though we haven't needed to try this yet. This library is being created for a very specific use case in a private project, but perhaps someone out there will find it useful too.
