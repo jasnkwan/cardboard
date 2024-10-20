@@ -63,6 +63,9 @@ jobs:
         if: env.BRANCH_NAME == 'main'
         run: |
           make dist
+          sleep 1
+          echo "Created build artifacts:"
+          echo $(ls dist)
 
       # Step 7: Create the GitHub release using the GitHub CLI
       - name: Create GitHub release
