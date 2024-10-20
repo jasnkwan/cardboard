@@ -1,5 +1,4 @@
-name: Create Release on Tag with Python and NPM Artifacts
-
+name: Create Release
 on:
   push:
     tags:
