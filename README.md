@@ -3,9 +3,9 @@
 ![Project planning](https://img.shields.io/badge/status-planning-yellow.svg)
 
 ---
-A simple data dashboard for use in Flask apps.  
+A simple data dashboard for use in Flask apps.  Each card on the board manages its own WebSocket connection to the server to be abe to handle multiple high bandwidth data sources such as audio or high frequency sensor data which could otherwise saturate a single multiplexed Flask SocketIO connection.
 
-This library is being created for a very specific use case in a private project, but perhaps someone out there will find it useful too.
+While this project was intended for use on localhost, it should be able to be deployed to the web as well, though we haven't needed to try this yet. This library is being created for a very specific use case in a private project, but perhaps someone out there will find it useful too.
 
 
 ## Prerequisites
@@ -65,7 +65,7 @@ make start_wsgi
 ```
 
 
-## Installation
+## Installation of Published Packages
 
 This section describes how to install the cardboard packages for development and production.  This assumes cardboard is being integrated into a Python Flask application with a front-end built using Vite with the React plugin.
 In this context, we assume the basic directory structures:
