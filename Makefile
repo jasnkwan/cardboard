@@ -192,6 +192,7 @@ versions:
 # Create a tagged release with the version number in VERSION. This will trigger the create_release.yml workflow.
 #
 tag:
+	@$(UPDATE_VERSION_CMD)
 	@$(TAG_CMD)
 
 #
