@@ -1,0 +1,72 @@
+name: Publish to NPM
+
+on:
+  workflow_run:
+    workflows: ["Create Release"]  # Name of the create_release workflow
+    types:
+      - completed  # Trigger on completion of the create_release workflow
+  workflow_dispatch: # Allow manual dispatching of this workflow
+
+jobs:
+  publish_pypi:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Ensure this runs only if the previous workflow was successful
+
+    steps:
+      # Step 0: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 1a: Check if this is the main branch: Get the commit hash for the tag
+      - name: Get the commit associated with the tag
+        id: get_commit
+        run: |
+          commit=$(git rev-list -n 1 "$GITHUB_REF")  # Get the commit hash for the tag
+          echo "COMMIT_HASH=${commit}" >> $GITHUB_ENV  # Set the commit hash as an environment variable
+
+      # Step 1b: Check if the commit is from the main branch
+      - name: Check if the tag is from the main branch
+        run: |
+          git fetch --prune --unshallow  # Fetch the full commit history if it's a shallow clone
+          branch=$(git branch --contains "$COMMIT_HASH" | grep '*' | awk '{print $2}')
+          echo "The tag is from branch: $branch"
+          echo "BRANCH_NAME=${branch}" >> $GITHUB_ENV  # Set the branch name as an environment variable
+
+      # Step 2: Set up Python (for building the backend)
+      - name: Set up Python
+        if: env.BRANCH_NAME == 'main'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      # Step 3: Upgrade pip (if required)
+      - name: Update Pip
+        if: env.BRANCH_NAME == 'main'
+        run: |
+          python -m pip install --upgrade pip
+
+      # Step 4: Set up Node.js for npm build
+      - name: Install up Node.js
+        if: env.BRANCH_NAME == 'main'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Specify your desired Node.js version
+
+      # Step 5: Initialize the project environment and install dependencies
+      - name: Initialize project dependencies
+        if: env.BRANCH_NAME == 'main'
+        run: |
+          make init
+
+      # Step 6: Build the Node module cardboard-ui
+      - name: Build dist artifacts
+        if: env.BRANCH_NAME == 'main'
+        run: |
+          make build_vite
+
+      - name: Upload to NPM
+        run: |          
+          make upload_npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                    
