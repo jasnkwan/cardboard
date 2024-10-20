@@ -13,6 +13,10 @@
 		build_vite \
 		dist \
 		depends \
+		upload_test_pypi \
+		upload_pypi \
+		upload_npm \
+		publish \
 		clean \
 		clean_vite \
 		clean_dist \
@@ -52,8 +56,9 @@ SETUP_CMD        := python setup.py sdist bdist_wheel
 COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
 COPY_REACT_CMD   := cp -r $(VITE_SRC_DIR)/* $(FLASK_RES_DIR)/.
 BUILD_DIST_CMD   := python -m build
-TEST_UPLOAD_CMD  := twine upload --verbose --repository testpypi dist/*
-
+UPLOAD_TEST_PYPI_CMD  := twine upload --verbose --repository testpypi dist/*
+UPLOAD_PYPI_CMD  := twine upload --verbose dist/*     
+UPLOAD_NPM_CMD   := cd $(VITE_DIR) && npm publish
 
 #
 # Install project dependencies
@@ -138,8 +143,27 @@ dist: $(VITE_DIST_DIR)
 #
 # Upload packages to TestPyPi server.
 # 
-test_upload: dist
-	@$(TEST_UPLOAD_CMD)
+upload_test_pypi: dist
+	@$(UPLOAD_TEST_PYPI_CMD)
+
+#
+# Upload packages to PyPi server.
+# 
+upload_pypi: dist
+	@$(UPLOAD_PYPI_CMD)
+
+#
+# Upload ui packages to npm.
+#
+upload_npm: dist
+	@$(UPLOAD_NPM_CMD)
+
+#
+# Publish to PYPI and NPM
+#
+publish: dist
+	@$(UPLOAD_PYPI_CMD)
+	@$(UPLOAD_NPM_CMD)
 
 #
 # Remove Vite build files
