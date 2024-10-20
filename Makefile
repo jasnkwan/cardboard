@@ -197,13 +197,13 @@ tag:
 #
 # Upload packages to TestPyPi server.
 # 
-upload_test_pypi: dist
+upload_test_pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
 	@$(UPLOAD_TEST_PYPI_CMD)
 
 #
 # Upload packages to PyPi server.
 # 
-upload_pypi: dist
+upload_pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
 	@$(UPLOAD_PYPI_CMD)
 
 #

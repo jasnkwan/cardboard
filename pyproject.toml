@@ -3,9 +3,9 @@ requires = [ "setuptools>=61.0", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cardboard"
+name = "cardboard-server"
 version = "0.1.0"
-description = "A React UI for data dashboards"
+description = "A Flask server for React data dashboards"
 readme = "README.md"
 dependencies = [ "asgiref==3.8.1", "bidict==0.23.1", "blinker==1.8.2", "build==1.2.2.post1", "certifi==2024.8.30", "charset-normalizer==3.3.2", "click==8.1.7", "docutils==0.21.2", "Flask==3.0.3", "Flask-Cors==5.0.0", "Flask-SocketIO==5.3.7", "gunicorn==23.0.0", "h11==0.14.0", "idna==3.10", "importlib_metadata==8.5.0", "itsdangerous==2.2.0", "jaraco.classes==3.4.0", "jaraco.context==6.0.1", "jaraco.functools==4.1.0", "Jinja2==3.1.4", "keyring==25.4.1", "markdown-it-py==3.0.0", "MarkupSafe==2.1.5", "mdurl==0.1.2", "more-itertools==10.5.0", "nh3==0.2.18", "packaging==24.1", "pkginfo==1.10.0", "Pygments==2.18.0", "pyproject_hooks==1.2.0", "python-engineio==4.9.1", "python-socketio==5.11.4", "readme_renderer==44.0", "requests==2.32.3", "requests-toolbelt==1.0.0", "rfc3986==2.0.0", "rich==13.8.1", "setuptools==75.1.0", "simple-websocket==1.0.0", "toml==0.10.2", "twine==5.1.1", "urllib3==2.2.3", "watchdog==5.0.3", "websockets==13.1", "Werkzeug==3.0.4", "wheel==0.44.0", "wsproto==1.2.0", "zipp==3.20.2",]
 requires-python = ">=3.7"
