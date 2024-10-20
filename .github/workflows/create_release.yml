@@ -6,7 +6,7 @@ on:
       - 'v*'  # Matches tags like v1.0.0, v2.1.0, etc.
     branches:
      - main
-  workflow-dispatch: # Allow manual dispatching of this workflow
+  workflow_dispatch: # Allow manual dispatching of this workflow
 
 jobs:
   create_release:
