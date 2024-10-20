@@ -147,7 +147,7 @@ stop_server:
 #
 # Start the Gunicorn WSGI server
 #
-start_wsgi: $(FLASK_RES_DIR)
+start_wsgi:
 	@$(WSGI_CMD)
 
 #
