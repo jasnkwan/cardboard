@@ -5,6 +5,10 @@ on:
       - 'v*'  # Matches tags like v1.0.0, v2.1.0, etc.
   workflow_dispatch: # Allow manual dispatching of this workflow
 
+permissions:
+  contents: write   # Allows modifying the repository contents, like creating releases
+  releases: write   # Allows creating releases
+
 jobs:
   create_release:
     runs-on: ubuntu-latest
