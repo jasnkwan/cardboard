@@ -39,17 +39,11 @@ jobs:
         run: |
           make init
 
-      # Step 6: Install npm dependencies and build the npm package in the ui directory
-      - name: Build npm package
-        working-directory: ./cardboard/cardboard_ui
-        run: |
-          npm install
-
-      # Step 7: Build the Python distribution (wheel and sdist)
+      # Step 6: Build the Python distribution (wheel and sdist)
       - name: Build dist artifacts
         run: make dist
 
-      # Step 8: Create the GitHub release using the GitHub CLI
+      # Step 7: Create the GitHub release using the GitHub CLI
       - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,7 +52,7 @@ jobs:
           VERSION_NAME=$(cat VERSION)
           gh release create $TAG_NAME --title "Release $VERSION_NAME" --notes "Automated release for version $VERSION_NAME" --draft
 
-      # Step 9: Upload Python and npm build artifacts to the release
+      # Step 8: Upload Python and npm build artifacts to the release
       - name: Upload release artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -69,4 +63,4 @@ jobs:
           # Upload npm build artifacts
           gh release upload $TAG_NAME cardboard_ui/dist/* --clobber
 
-      # Step 10: Publish to PyPi and NPM registries (TODO)
+      # Step 9: Publish to PyPi and NPM registries (TODO)
