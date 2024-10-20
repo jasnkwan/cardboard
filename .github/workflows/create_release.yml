@@ -11,6 +11,7 @@ permissions:
 jobs:
   create_release:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Only run this job if the tag is from the main branch
 
     steps:
       # Step 0: Check out the repository
@@ -74,7 +75,7 @@ jobs:
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
           VERSION_NAME=$(cat VERSION)
-          gh release create $TAG_NAME --title "Release $VERSION_NAME" --notes "Release for version $VERSION_NAME"
+          gh release create $TAG_NAME --title "Release $VERSION_NAME" --notes "Release for version $VERSION_NAME" --draft
 
       # Step 8: Upload Python and npm build artifacts to the release
       - name: Upload release artifacts
