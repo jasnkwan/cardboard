@@ -36,13 +36,13 @@ jobs:
 
       # Step 5: Initialize the project environment and install dependencies
       - name: Initialize project dependencies
-        working-directory: ./cardboard
         run: |
           make init
 
       # Step 6: Build the Python distribution (wheel and sdist)
       - name: Build dist artifacts
-        run: make dist
+        run: |
+          make dist
 
       # Step 7: Create the GitHub release using the GitHub CLI
       - name: Create GitHub release
