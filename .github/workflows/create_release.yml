@@ -18,16 +18,15 @@ jobs:
       - name: Get the commit associated with the tag
         id: get_commit
         run: |
-          echo "Commit: $GITHUB_REF"
-          commit=$(echo $GITHUB_REF | awk -F'/' '{print $3}')  # Extract the commit hash from the tag reference
+          commit=$(git rev-list -n 1 "$GITHUB_REF")  # Get the commit hash for the tag
           echo "COMMIT_HASH=${commit}" >> $GITHUB_ENV  # Set the commit hash as an environment variable
 
       # Step 1b: Check if the commit is from the main branch
       - name: Check if the tag is from the main branch
         run: |
           git fetch --prune --unshallow  # Fetch the full commit history if it's a shallow clone
-          branch=$(git branch --contains $COMMIT_HASH | grep '*' | awk '{print $2}')
-          echo "The tag is from branch: $branch"          
+          branch=$(git branch --contains "$COMMIT_HASH" | grep '*' | awk '{print $2}')
+          echo "The tag is from branch: $branch"
           echo "BRANCH_NAME=${branch}" >> $GITHUB_ENV  # Set the branch name as an environment variable
 
       # Step 2: Set up Python (for building the backend)
@@ -52,6 +51,7 @@ jobs:
 
       # Step 5: Initialize the project environment and install dependencies
       - name: Initialize project dependencies
+        if: env.BRANCH_NAME == 'main'
         run: |
           make init
 
