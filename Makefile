@@ -35,9 +35,9 @@ PROJECT_NAME     := cardboard
 VERSION          := $(shell cat $(PROJECT_DIR)/VERSION)
 
 # Bulid artifact names
-PYTHON_BDIST_WHL := $(PROJECT_NAME)-$(VERSION)-py3-none-any.whl
-PYTHON_SDIST_ZIP := $(PROJECT_NAME)-$(VERSION).tar.gz
-NODE_MODULE_ZIP  := $(PROJECT_NAME)-ui-$(VERSION).tar.gz
+PYTHON_BDIST_WHL := cardboard_server-$(VERSION)-py3-none-any.whl
+PYTHON_SDIST_ZIP := cardboard_server-$(VERSION).tar.gz
+NODE_MODULE_ZIP  := cardboard-ui-$(VERSION).tar.gz
 
 # Directory setup
 FLASK_DIR        := ./cardboard
@@ -47,7 +47,7 @@ VITE_DIST_DIR    := $(VITE_DIR)/dist
 VITE_SRC_DIR     := $(VITE_DIR)/src
 DIST_DIR         := ./dist
 BUILD_DIR        := ./build
-EGG_INFO_DIR     := ./cardboard.egg-info
+EGG_INFO_DIR     := ./cardboard_server.egg-info
 NODE_MODULES_DIR := $(VITE_DIR)/node_modules
 PYCACHE_DIR      := $(FLASK_DIR)/__pycache__
 
