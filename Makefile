@@ -27,11 +27,19 @@
 		clobber
 
 
+# Deduce the project root directory. Assuemes this Makefile is in project root.
 MAKEFILE_PATH    := $(abspath $(lastword $(MAKEFILE_LIST)))
 PROJECT_DIR      := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
 
-VERSION          := $$(cat $(PROJECT_DIR)/VERSION)
+PROJECT_NAME     := cardboard
+VERSION          := $(shell cat $(PROJECT_DIR)/VERSION)
 
+# Bulid artifact names
+PYTHON_BDIST_WHL := $(PROJECT_NAME)-$(VERSION)-py3-none-any.whl
+PYTHON_SDIST_ZIP := $(PROJECT_NAME)-$(VERSION).tar.gz
+NODE_MODULE_ZIP  := $(PROJECT_NAME)-ui-$(VERSION).tar.gz
+
+# Directory setup
 FLASK_DIR        := ./cardboard
 VITE_DIR         := ./cardboard_ui
 FLASK_RES_DIR    := $(FLASK_DIR)/resources
@@ -50,6 +58,7 @@ FLASK_PORT       := 5000
 INIT_CMD         := pip install -r requirements.txt
 NPM_INSTALL_CMD  := cd $(VITE_DIR) && npm install
 
+# Configure Command Macros
 FLASK_CMD        := FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
 SERVE_CMD        := python -m cardboard.server
 WSGI_CMD         := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) cardboard.wsgi:app
@@ -67,6 +76,7 @@ SETUP_CMD        := python setup.py sdist bdist_wheel
 COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
 COPY_REACT_CMD   := cp -r $(VITE_SRC_DIR)/* $(FLASK_RES_DIR)/.
 BUILD_DIST_CMD   := python -m build
+ZIP_VITE_CMD     := tar cfzv $(DIST_DIR)/$(NODE_MODULE_ZIP) -C $(VITE_DIST_DIR) .
 
 UPLOAD_TEST_PYPI_CMD  := twine upload --verbose --repository testpypi dist/*
 UPLOAD_PYPI_CMD  := twine upload --verbose dist/*     
@@ -81,9 +91,12 @@ TAG_CMD          := cd $(PROJECT_DIR) && git tag -a v$(VERSION) -m "Create versi
 # Print info
 #
 info:
-	@echo "MAKEFILE_LIST: $(MAKEFILE_LIST)"
-	@echo "PROJECT_DIR:   $(PROJECT_DIR)"
-	@echo "VERSION:       $(VERSION)"
+	@echo "MAKEFILE_LIST:     $(MAKEFILE_LIST)"
+	@echo "PROJECT_DIR:       $(PROJECT_DIR)"
+	@echo "VERSION:           $(VERSION)"
+	@echo "NODE_MODULE_ZIP:   $(NODE_MODULE_ZIP)"
+	@echo "PYTHON_BDIST_WHL:  $(PYTHON_BDIST_WHL)"
+	@echo "PYTHON_SDIST_ZIP:  $(PYTHON_SDIST_ZIP)"
 
 #
 # Install project dependencies
@@ -159,11 +172,10 @@ depends:
 #
 # Build source and binary wheel distributions
 #
-dist: $(VITE_DIST_DIR)
-	@$(COPY_ASSETS_CMD)
-	@$(COPY_REACT_CMD)
-	@$(BUILD_DIST_CMD)
-	@rm -rf $(FLASK_RES_DIR)
+dist: $(VITE_DIST_DIR) $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(NODE_MODULE_ZIP)
+#	@$(COPY_ASSETS_CMD)
+#	@$(COPY_REACT_CMD)
+#	@rm -rf $(FLASK_RES_DIR)
 
 #
 # Update versions in pyproject.toml and package.json to match VERSION
@@ -240,3 +252,23 @@ $(VITE_DIST_DIR):
 #
 $(FLASK_RES_DIR): $(VITE_DIST_DIR)
 	@$(COPY_ASSETS_CMD)
+
+#
+# Build python package artifacts
+#
+$(DIST_DIR)/$(PYTHON_BDIST_WHL):
+	@$(BUILD_DIST_CMD)
+
+#
+# Build python package artifacts
+#
+$(DIST_DIR)/$(PYTHON_SDIST_ZIP):
+	@$(BUILD_DIST_CMD)
+
+#
+# Build node module artifacts
+#
+$(DIST_DIR)/$(NODE_MODULE_ZIP): $(VITE_DIST_DIR)	
+	@echo "Building node module archive..."
+	@$(ZIP_VITE_CMD)
+	@echo "Built node module archive."
