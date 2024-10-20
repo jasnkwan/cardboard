@@ -162,6 +162,12 @@ build_vite:
 	@$(BUILD_VITE_CMD)
 
 #
+# Build Python packages
+#
+build_python: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL)
+	
+
+#
 # Update Python dependencies in requirements.txt and pyproject.toml
 #
 depends:
