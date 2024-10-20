@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write   # Allows modifying the repository contents, like creating releases
-  releases: write   # Allows creating releases
 
 jobs:
   create_release:
