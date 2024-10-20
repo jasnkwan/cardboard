@@ -10,9 +10,13 @@
 		stop_server \
 		start_wsgi \
 		stop_wsgi \
+		init \
+		info \
 		build_vite \
 		dist \
 		depends \
+		version \
+		tag \
 		upload_test_pypi \
 		upload_pypi \
 		upload_npm \
@@ -22,6 +26,11 @@
 		clean_dist \
 		clobber
 
+
+MAKEFILE_PATH    := $(abspath $(lastword $(MAKEFILE_LIST)))
+PROJECT_DIR      := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
+
+VERSION          := $$(cat $(PROJECT_DIR)/VERSION)
 
 FLASK_DIR        := ./cardboard
 VITE_DIR         := ./cardboard_ui
@@ -40,6 +49,7 @@ FLASK_PORT       := 5000
 
 INIT_CMD         := pip install -r requirements.txt
 NPM_INSTALL_CMD  := cd $(VITE_DIR) && npm install
+
 FLASK_CMD        := FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
 SERVE_CMD        := python -m cardboard.server
 WSGI_CMD         := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) cardboard.wsgi:app
@@ -49,6 +59,7 @@ STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print
 STOP_SERVE_CMD   := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
 STOP_WSGI_CMD    := ps aux | grep "cardboard.wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -2 > /dev/null 2>&1
 STOP_VITE_CMD    := ps aux | grep "cardboard_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
+
 BUILD_VITE_CMD   := cd $(VITE_DIR) && npm run build
 FREEZE_CMD       := pip freeze > requirements.txt
 DEPENDS_CMD      := python build_utils/update_dependencies.py
@@ -56,9 +67,23 @@ SETUP_CMD        := python setup.py sdist bdist_wheel
 COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
 COPY_REACT_CMD   := cp -r $(VITE_SRC_DIR)/* $(FLASK_RES_DIR)/.
 BUILD_DIST_CMD   := python -m build
+
 UPLOAD_TEST_PYPI_CMD  := twine upload --verbose --repository testpypi dist/*
 UPLOAD_PYPI_CMD  := twine upload --verbose dist/*     
 UPLOAD_NPM_CMD   := cd $(VITE_DIR) && npm publish
+
+UPDATE_VERSION_CMD := python build_utils/update_versions.py
+TAG_CMD          := cd $(PROJECT_DIR) && git tag -a v$(VERSION) -m "Create version tag v$(VERSION)" && git push --tags
+
+
+
+#
+# Print info
+#
+info:
+	@echo "MAKEFILE_LIST: $(MAKEFILE_LIST)"
+	@echo "PROJECT_DIR:   $(PROJECT_DIR)"
+	@echo "VERSION:       $(VERSION)"
 
 #
 # Install project dependencies
@@ -139,6 +164,18 @@ dist: $(VITE_DIST_DIR)
 	@$(COPY_REACT_CMD)
 	@$(BUILD_DIST_CMD)
 	@rm -rf $(FLASK_RES_DIR)
+
+#
+# Update versions in pyproject.toml and package.json to match VERSION
+#
+versions:
+	@$(UPDATE_VERSION_CMD)
+
+#
+# Create a tagged version
+#
+tag:
+	@$(TAG_CMD)
 
 #
 # Upload packages to TestPyPi server.
