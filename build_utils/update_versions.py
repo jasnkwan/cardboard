@@ -70,9 +70,13 @@ if __name__ == "__main__":
         commit_msg = f"Update version to {version}"
         git_add = f"git add {pyproject_toml_rel} {package_json_rel} {version_rel}"
         git_commit = f"git commit -m 'Update version to {version}'"
+        git_push = f"git push"
         
         print(f"git_add={git_add}")
         subprocess.check_call(git_add, shell=True, cwd=project_dir)
 
         print(f"git_commit={git_commit}")
         subprocess.check_call(git_commit, shell=True, cwd=project_dir)
+
+        print(f"git_push={git_push}")
+        subprocess.check_call(git_push, shell=True, cwd=project_dir)
