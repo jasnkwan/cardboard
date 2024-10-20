@@ -83,7 +83,7 @@ UPLOAD_PYPI_CMD  := twine upload --verbose dist/*
 UPLOAD_NPM_CMD   := cd $(VITE_DIR) && npm publish
 
 UPDATE_VERSION_CMD := python build_utils/update_versions.py
-TAG_CMD          := cd $(PROJECT_DIR) && git tag -a v$(VERSION) -m "Create version tag v$(VERSION)" && git push --tags
+TAG_CMD          := cd $(PROJECT_DIR) && git tag -a v$(VERSION) -m "Create version tag v$(VERSION)" && git push origin v$(VERSION)
 
 
 
@@ -130,7 +130,6 @@ start_vite:
 #
 stop_vite:
 	@$(STOP_VITE_CMD)
-
 
 #
 # Start the Flask server in debug mode with Python
@@ -184,7 +183,7 @@ versions:
 	@$(UPDATE_VERSION_CMD)
 
 #
-# Create a tagged version
+# Create a tagged release with the version number in VERSION. This will trigger the create_release.yml workflow.
 #
 tag:
 	@$(TAG_CMD)
