@@ -1,15 +1,16 @@
 /**
  * Board.js
  */
-import React from 'react';
+//import React from 'react';
 import { useEffect, useState } from 'react';
-import Column from '@/Column';
+import Column from './Column';
 
 import axios from 'axios';
 
+import './index.css'
 import './Board.css';
 
-const Board = () => {
+const Board = ({cardboard_server}) => {
 
     const [board, setBoard] = useState([]);
 
@@ -18,7 +19,11 @@ const Board = () => {
         // fetch the card data from flask server
         const getBoard = async () => {
             try {
-                const req = CARDBOARD_SERVER + "/board"            
+                let server = cardboard_server         
+                if(!server) {
+                    server = "http://127.0.0.1:5000"
+                }    
+                const req = server + "/board"            
                 const res = await axios.get(req, {
                     headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -44,7 +49,7 @@ const Board = () => {
     return (
         <div className="cardboard">        
             {board && board.columns && board.columns.map((column, index) => (
-                <Column key={index} {...column} />
+                <Column key={index} cardboard_server={cardboard_server} {...column} />
             ))}
         </div>        
     )

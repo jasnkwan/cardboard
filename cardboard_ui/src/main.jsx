@@ -5,6 +5,6 @@ import './index.css'
 
 createRoot(document.getElementById('cardboard-root')).render(
   <StrictMode>
-    <Board />
+    <Board cardboard_server={cardboard_server}/>
   </StrictMode>,
 )

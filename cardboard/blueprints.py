@@ -5,6 +5,7 @@ import importlib.resources as pkg_resources
 import os
 
 # Load environment variables
+FLASK_ENV = os.environ.get("FLASK_ENV", default="production")
 CARDBOARD_FLASK_HOST = os.environ.get("CARDBOARD_FLASK_HOST", default="127.0.0.1")
 CARDBOARD_FLASK_PORT = int(os.environ.get("CARDBOARD_FLASK_PORT", default="5000"))
 CARDBOARD_STATIC_DIR = os.environ.get("CARDBOARD_STATIC_DIR", default="resources")
@@ -44,16 +45,18 @@ def serve_react_app():
     Serve index.html from vite dist
     """
     #return send_from_directory(cardboard_blueprint.static_folder, 'index.html')
-    return render_template('index.html', cardboard_server=f"{request.scheme}://{CARDBOARD_FLASK_HOST}:{CARDBOARD_FLASK_PORT}")
+    development = FLASK_ENV=="production"
+    return render_template('index.html', cardboard_server=f"{request.scheme}://{CARDBOARD_FLASK_HOST}:{CARDBOARD_FLASK_PORT}", development=development)
 
 
+'''
 @cardboard_blueprint.route('/<path:path>')
 def serve_static(path):
     """
     Serve static files from vite dist
     """
     return send_from_directory(cardboard_blueprint.static_folder, path)
-
+'''
 
 @cardboard_blueprint.route("/board")
 def board():

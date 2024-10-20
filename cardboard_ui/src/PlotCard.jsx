@@ -1,5 +1,5 @@
 // src/components/PlotCard.js
-import React from 'react';
+//import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import Plot from 'react-plotly.js';
 import './PlotCard.css'; // Assuming additional styles specific to PlotCard
 
 
-const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow }) => {
+const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow, cardboard_server }) => {
 
     const [data, setData] = useState(plot_data);
     const [timestamp, setTimestamp] = useState("");
@@ -77,7 +77,11 @@ const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow })
 
         const startCard = async() => {
             try {
-                const req = CARDBOARD_SERVER + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);           
+                let server = cardboard_server         
+                if(!server) {
+                    server = "http://127.0.0.1:5000"
+                }    
+                const req = server + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);           
                 const startRes = await axios.get(req);
                 console.log("start res=" + JSON.stringify(startRes.data))
                 startSocket()
@@ -89,7 +93,11 @@ const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow })
 
         const stopCard = async() => {
             try {
-                const req = CARDBOARD_SERVER + "/stop?card=" + title;
+                let server = cardboard_server         
+                if(!server) {
+                    server = "http://127.0.0.1:5000"
+                }    
+                const req = server + "/stop?card=" + title;
                 const stopRes = await axios.get(req);
                 console.log("stop res=" + JSON.stringify(stopRes.data));
                 if(socket.current) {

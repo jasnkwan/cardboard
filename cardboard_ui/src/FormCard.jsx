@@ -1,11 +1,11 @@
-import React from 'react';
+//import React from 'react';
 import { useState, useEffect, useRef } from 'react'
 import Card from './Card';
 import axios from 'axios';
 
 import './FormCard.css';
 
-const FormCard = ({ title, type, url, groups }) => {
+const FormCard = ({ title, type, url, groups, cardboard_server }) => {
 
     const [sliderValues, setSliderValues] = useState({})
 
@@ -68,7 +68,11 @@ const FormCard = ({ title, type, url, groups }) => {
  
         const startCard = async() => {
             try {
-                const req = CARDBOARD_SERVER + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);   
+                let server = cardboard_server         
+                if(!server) {
+                    server = "http://127.0.0.1:5000"
+                }    
+                const req = server + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);   
                 const startRes = await axios.get(req);
                 console.log("start res=" + JSON.stringify(startRes.data))
                 startSocket()
@@ -80,7 +84,11 @@ const FormCard = ({ title, type, url, groups }) => {
 
         const stopCard = async() => {
             try {
-                const req = CARDBOARD_SERVER + "/stop?card=" + title;
+                let server = cardboard_server         
+                if(!server) {
+                    server = "http://127.0.0.1:5000"
+                }    
+                const req = server + "/stop?card=" + title;
                 const stopRes = await axios.get(req);
                 console.log("stop res=" + JSON.stringify(stopRes.data));
                 if(socket.current) {
