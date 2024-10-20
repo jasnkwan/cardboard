@@ -209,7 +209,7 @@ upload_pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL)
 #
 # Upload ui packages to npm.
 #
-upload_npm: $(DIST_DIR)/$(NODE_MODULE_ZIP)
+upload_npm: $(VITE_DIST_DIR)
 	@$(UPLOAD_NPM_CMD)
 
 #
