@@ -65,7 +65,9 @@ jobs:
           make build_vite
 
       - name: Upload to NPM
-        run: |          
+        run: |
+          echo "@cardboard-ui:registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
           make upload_npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
