@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # Allow manual dispatching of this workflow
 
 jobs:
-  publish_pypi:
+  publish_npm:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}  # Allow manual dispatch or success of previous workflow
 
