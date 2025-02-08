@@ -32,42 +32,45 @@ MAKEFILE_PATH    := $(abspath $(lastword $(MAKEFILE_LIST)))
 PROJECT_DIR      := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
 
 PROJECT_NAME     := cardboard
+FLASK_PORT       := 5000
+VITE_PORT        := 5173
+
 VERSION          := $(shell cat $(PROJECT_DIR)/VERSION)
 
 # Bulid artifact names
-PYTHON_BDIST_WHL := cardboard_server-$(VERSION)-py3-none-any.whl
-PYTHON_SDIST_ZIP := cardboard_server-$(VERSION).tar.gz
-NODE_MODULE_ZIP  := cardboard-ui-$(VERSION).tar.gz
+PYTHON_BDIST_WHL := $(PROJECT_NAME)_server-$(VERSION)-py3-none-any.whl
+PYTHON_SDIST_ZIP := $(PROJECT_NAME)_server-$(VERSION).tar.gz
+NODE_MODULE_ZIP  := $(PROJECT_NAME)-ui-$(VERSION).tar.gz
 
 # Directory setup
-FLASK_DIR        := ./cardboard
-VITE_DIR         := ./cardboard_ui
+FLASK_DIR        := ./$(PROJECT_NAME)
+VITE_DIR         := ./$(PROJECT_NAME)_ui
 FLASK_RES_DIR    := $(FLASK_DIR)/resources
+FLASK_TEMPLATE_DIR := $(FLASK_DIR)/templates
 VITE_DIST_DIR    := $(VITE_DIR)/dist
 VITE_SRC_DIR     := $(VITE_DIR)/src
 DIST_DIR         := ./dist
 BUILD_DIR        := ./build
-EGG_INFO_DIR     := ./cardboard_server.egg-info
+EGG_INFO_DIR     := ./$(PROJECT_NAME)_server.egg-info
 NODE_MODULES_DIR := $(VITE_DIR)/node_modules
 PYCACHE_DIR      := $(FLASK_DIR)/__pycache__
 
 FLASK_APP        := $(FLASK_DIR)/server.py
 FLASK_HOST       := 127.0.0.1
-FLASK_PORT       := 5000
 
 INIT_CMD         := pip install -r requirements.txt
 NPM_INSTALL_CMD  := cd $(VITE_DIR) && npm install
 
 # Configure Command Macros
 FLASK_CMD        := FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
-SERVE_CMD        := python -m cardboard.server
-WSGI_CMD         := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) cardboard.wsgi:app
+SERVE_CMD        := python -m $(PROJECT_NAME).server
+WSGI_CMD         := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) $(PROJECT_NAME).wsgi:app
 VITE_CMD         := cd $(VITE_DIR) && npm run dev
 
 STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
-STOP_SERVE_CMD   := ps aux | grep "cardboard.server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
-STOP_WSGI_CMD    := ps aux | grep "cardboard.wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -2 > /dev/null 2>&1
-STOP_VITE_CMD    := ps aux | grep "cardboard_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
+STOP_SERVE_CMD   := ps aux | grep "$(PROJECT_NAME).server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
+STOP_WSGI_CMD    := ps aux | grep "$(PROJECT_NAME).wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -2 > /dev/null 2>&1
+STOP_VITE_CMD    := ps aux | grep "$(PROJECT_NAME)_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
 
 BUILD_VITE_CMD   := cd $(VITE_DIR) && npm run build
 FREEZE_CMD       := pip freeze > requirements.txt
@@ -231,6 +234,7 @@ clean-vite:
 #
 clean-dist:
 	@rm -rf $(FLASK_RES_DIR)
+	@rm -rf $(FLASK_TEMPLATE_DIR)
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(DIST_DIR)
 	@rm -rf $(EGG_INFO_DIR)
@@ -258,17 +262,24 @@ $(VITE_DIST_DIR):
 #
 $(FLASK_RES_DIR): $(VITE_DIST_DIR)
 	@$(COPY_ASSETS_CMD)
+	@$(COPY_REACT_CMD)
+
+#
+# Copy the vite index.html to the Flask template directory
+#
+$(FLASK_TEMPLATE_DIR): $(VITE_DIST_DIR)
+	@$(COPY_INDEX_CMD)
 
 #
 # Build python package artifacts
 #
-$(DIST_DIR)/$(PYTHON_BDIST_WHL):
+$(DIST_DIR)/$(PYTHON_BDIST_WHL): $(FLASK_RES_DIR) $(FLASK_TEMPLATE_DIR)
 	@$(BUILD_DIST_CMD)
 
 #
-# Build python package artifacts
+# Build python src package artifacts
 #
-$(DIST_DIR)/$(PYTHON_SDIST_ZIP):
+$(DIST_DIR)/$(PYTHON_SDIST_ZIP): $(FLASK_RES_DIR) $(FLASK_TEMPLATE_DIR)
 	@$(BUILD_DIST_CMD)
 
 #
