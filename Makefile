@@ -2,28 +2,28 @@
 # Project Makefile
 #
 
-.PHONY: start_flask \
-		stop_flask \
-		start_vite \
-		stop_vite \
-		start_server \
-		stop_server \
-		start_wsgi \
-		stop_wsgi \
+.PHONY: start-flask \
+		stop-flask \
+		start-vite \
+		stop-vite \
+		start-server \
+		stop-server \
+		start-wsgi \
+		stop-wsgi \
 		init \
 		info \
-		build_vite \
+		build-vite \
 		dist \
 		depends \
 		version \
 		tag \
-		upload_test_pypi \
-		upload_pypi \
-		upload_npm \
+		upload-test-pypi \
+		upload-pypi \
+		upload-npm \
 		publish \
 		clean \
-		clean_vite \
-		clean_dist \
+		clean-vite \
+		clean-dist \
 		clobber
 
 
@@ -110,61 +110,61 @@ init:
 #
 # Start the Flask development server
 #
-start_flask:
+start-flask:
 	@$(FLASK_CMD)
 
 #
 # Stop the Flask development server
 #
-stop_flask:
+stop-flask:
 	@$(STOP_FLASK_CMD)
 
 #
 # Start the Vite development server
 #
-start_vite:
+start-vite:
 	@$(VITE_CMD)
 
 #
 # Stop the Vite development server
 #
-stop_vite:
+stop-vite:
 	@$(STOP_VITE_CMD)
 
 #
 # Start the Flask server in debug mode with Python
 #
-start_server: $(VITE_DIST_DIR)
+start-server: $(VITE_DIST_DIR)
 	@$(SERVE_CMD)
 
 #
 # Stop the Flask server
 #
-stop_server:
+stop-server:
 	@$(STOP_SERVE_CMD)
 
 #
 # Start the Gunicorn WSGI server
 #
-start_wsgi:
+start-wsgi:
 	@$(WSGI_CMD)
 
 #
 # Stop the Gunicorn WSGI server
 #
-stop_wsgi:
+stop-wsgi:
 	@$(STOP_WSGI_CMD)
 
 #
 # Build the Vite production assets
 #
-build_vite:
+build-vite:
 	@$(BUILD_VITE_CMD)
 
 #
 # Build Python packages
 #
-build_python: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL)
+build-python: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL)
 	
 
 #
@@ -198,19 +198,19 @@ tag:
 #
 # Upload packages to TestPyPi server.
 # 
-upload_test_pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
+upload-test-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
 	@$(UPLOAD_TEST_PYPI_CMD)
 
 #
 # Upload packages to PyPi server.
 # 
-upload_pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
+upload-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
 	@$(UPLOAD_PYPI_CMD)
 
 #
 # Upload ui packages to npm.
 #
-upload_npm: $(VITE_DIST_DIR)
+upload-npm: $(VITE_DIST_DIR)
 	@$(UPLOAD_NPM_CMD)
 
 #
@@ -223,13 +223,13 @@ publish: dist
 #
 # Remove Vite build files
 #
-clean_vite:
+clean-vite:
 	@rm -rf $(VITE_DIST_DIR)
 
 #
 # Remove Python package build files
 #
-clean_dist:
+clean-dist:
 	@rm -rf $(FLASK_RES_DIR)
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(DIST_DIR)
@@ -238,7 +238,7 @@ clean_dist:
 #
 # Remove Python and Vite build files
 #
-clean: clean_vite clean_dist
+clean: clean-vite clean-dist
 
 #
 # Remove Python and Vite build files, installed node modules, and python dependencies
