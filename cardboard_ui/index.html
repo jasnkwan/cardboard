@@ -9,6 +9,7 @@
   <body data-theme="cardboard">
     <div id="cardboard-root"></div>
     <script>
+      /*
       let _CARDBOARD_SERVER = "{{cardboard_server}}";
       if(!_CARDBOARD_SERVER || _CARDBOARD_SERVER == "{{cardboard_server}}" || _CARDBOARD_SERVER == "") {
         _CARDBOARD_SERVER = "http://127.0.0.1:5000";
@@ -17,7 +18,43 @@
       const cardboard_server = _CARDBOARD_SERVER;
       const development = "{{development}}";
       const main_js = "{{main_js}}"
+      */
     </script>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Load the template data passed from the Flask server -->
+    <script>
+      const cardboard_server = "{{cardboard_server}}"
+      const development = "{{development}}"
+      console.log("cardboard_server=" + cardboard_server)
+      console.log("development=" + development)
+    </script>
+
+    <!-- Refer to Vite Backend Integration documentation:            -->
+    <!-- https://vite.dev/guide/backend-integration.html             -->
+
+    {% if development %}
+
+    <!-- If development mode, setup proxying to the Vite dev server. -->
+    <!-- Make sure the Vite dev server is running on port 5173       -->
+    <script type="module">
+      console.log("DEV MODE!")
+      import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+      RefreshRuntime.injectIntoGlobalHook(window)
+      window.$RefreshReg$ = () => {}
+      window.$RefreshSig$ = () => (type) => type
+      window.__vite_plugin_react_preamble_installed__ = true
+    </script>
+    <script type="module" src="http://localhost:5173/@vite/client"></script>
+    <script type="module" src="http://localhost:5173/src/main.jsx"></script>
+
+    {% else %}
+
+    <!-- If production mode, we serve the compiled assets from the flask server -->
+    <!-- Vite dev server does not need to be running                            -->
+    <script type="module" crossorigin src="/src/main.jsx"></script>
+    <link rel="stylesheet" crossorigin href="/src/main.css">
+
+    {% endif %}
+
   </body>
 </html>
