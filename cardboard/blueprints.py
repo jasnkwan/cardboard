@@ -10,6 +10,11 @@ CARDBOARD_FLASK_HOST = os.environ.get("CARDBOARD_FLASK_HOST", default="127.0.0.1
 CARDBOARD_FLASK_PORT = int(os.environ.get("CARDBOARD_FLASK_PORT", default="5000"))
 CARDBOARD_STATIC_DIR = os.environ.get("CARDBOARD_STATIC_DIR", default="resources")
 
+print(f"FLASK_ENV={FLASK_ENV}")
+if FLASK_ENV != "production":
+    CARDBOARD_STATIC_DIR = "../cardboard_ui"
+    
+
 cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  template_folder=CARDBOARD_STATIC_DIR, static_folder=CARDBOARD_STATIC_DIR, static_url_path='/')
 
 
@@ -45,7 +50,8 @@ def serve_react_app():
     Serve index.html from vite dist
     """
     #return send_from_directory(cardboard_blueprint.static_folder, 'index.html')
-    development = FLASK_ENV=="production"
+    development = FLASK_ENV!="production"
+    print(f"development={development}")
     return render_template('index.html', cardboard_server=f"{request.scheme}://{CARDBOARD_FLASK_HOST}:{CARDBOARD_FLASK_PORT}", development=development)
 
 
