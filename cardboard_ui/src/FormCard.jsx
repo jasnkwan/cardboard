@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import './FormCard.css';
 
-const FormCard = ({ title, type, url, groups, cardboard_server }) => {
+const FormCard = ({ title, type, url, groups, flask_server }) => {
 
     const [sliderValues, setSliderValues] = useState({})
 
@@ -68,7 +68,7 @@ const FormCard = ({ title, type, url, groups, cardboard_server }) => {
  
         const startCard = async() => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    
@@ -84,7 +84,7 @@ const FormCard = ({ title, type, url, groups, cardboard_server }) => {
 
         const stopCard = async() => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    

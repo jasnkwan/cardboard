@@ -8,7 +8,7 @@ import Plot from 'react-plotly.js';
 import './PlotCard.css'; // Assuming additional styles specific to PlotCard
 
 
-const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow, cardboard_server }) => {
+const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow, flask_server }) => {
 
     const [data, setData] = useState(plot_data);
     const [timestamp, setTimestamp] = useState("");
@@ -77,11 +77,12 @@ const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow, c
 
         const startCard = async() => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    
-                const req = server + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url);           
+                let provider = "cardboard.sockets.UDPSocketProvider"
+                const req = server + "/start?card=" + title + "&type=" + type + "&url=" + encodeURIComponent(url) + "&provider=" + encodeURIComponent(provider);           
                 const startRes = await axios.get(req);
                 console.log("start res=" + JSON.stringify(startRes.data))
                 startSocket()
@@ -93,7 +94,7 @@ const PlotCard = ({ title, type, url, plot_data, plot_layout, plot_opts, grow, c
 
         const stopCard = async() => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    

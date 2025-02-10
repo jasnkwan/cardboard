@@ -62,12 +62,14 @@ INIT_CMD         := pip install -r requirements.txt
 NPM_INSTALL_CMD  := cd $(VITE_DIR) && npm install
 
 # Configure Command Macros
-FLASK_CMD        := FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host $(FLASK_HOST) --port $(FLASK_PORT)
+FLASK_CMD        := FLASK_HOST=$(FLASK_HOST) FLASK_PORT=$(FLASK_PORT) FLASK_APP=$(FLASK_APP) FLASK_ENV=development flask run --debug --host=$(FLASK_HOST) --port=$(FLASK_PORT)
 SERVE_CMD        := python -m $(PROJECT_NAME).server
 WSGI_CMD         := gunicorn --bind $(FLASK_HOST):$(FLASK_PORT) $(PROJECT_NAME).wsgi:app
 VITE_CMD         := cd $(VITE_DIR) && npm run dev
 
-STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
+#STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
+STOP_FLASK_CMD   := ps aux | grep ".venv/bin/flask" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
+STOP_SOCKETS_CMD := lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9
 STOP_SERVE_CMD   := ps aux | grep "$(PROJECT_NAME).server" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -9 > /dev/null 2>&1
 STOP_WSGI_CMD    := ps aux | grep "$(PROJECT_NAME).wsgi:app" | grep -v grep | awk '{print $$2}' | xargs -r kill -2 && lsof -i :$(FLASK_PORT) | awk '{print $$2}' | grep -v PID | xargs -r kill -2 > /dev/null 2>&1
 STOP_VITE_CMD    := ps aux | grep "$(PROJECT_NAME)_ui/node_modules/.bin/vite" | grep -v grep | awk '{print $$2}' | xargs -r kill -2
@@ -76,6 +78,7 @@ BUILD_VITE_CMD   := cd $(VITE_DIR) && npm run build
 FREEZE_CMD       := pip freeze > requirements.txt
 DEPENDS_CMD      := python build_utils/update_dependencies.py
 SETUP_CMD        := python setup.py sdist bdist_wheel
+COPY_INDEX_CMD    := mkdir -p $(FLASK_TEMPLATE_DIR) && cp $(VITE_DIR)/index.html $(FLASK_TEMPLATE_DIR)/.
 COPY_ASSETS_CMD  := cp -r $(VITE_DIST_DIR) $(FLASK_RES_DIR)
 COPY_REACT_CMD   := cp -r $(VITE_SRC_DIR)/* $(FLASK_RES_DIR)/.
 BUILD_DIST_CMD   := python -m build
@@ -120,7 +123,10 @@ start-flask:
 # Stop the Flask development server
 #
 stop-flask:
+	@echo "Stopping flask..."
 	@$(STOP_FLASK_CMD)
+	@echo "Stopping sockets..."
+	@$(STOP_SOCKETS_CMD)
 
 #
 # Start the Vite development server
@@ -180,7 +186,7 @@ depends:
 #
 # Build source and binary wheel distributions
 #
-dist: $(VITE_DIST_DIR) $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(NODE_MODULE_ZIP)
+dist: $(VITE_DIST_DIR) $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_SDIST_ZIP) $(DIST_DIR)/$(NODE_MODULE_ZIP)
 #	@$(COPY_ASSETS_CMD)
 #	@$(COPY_REACT_CMD)
 #	@rm -rf $(FLASK_RES_DIR)
@@ -201,13 +207,13 @@ tag:
 #
 # Upload packages to TestPyPi server.
 # 
-upload-test-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
+upload-test-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_SDIST_ZIP) 
 	@$(UPLOAD_TEST_PYPI_CMD)
 
 #
 # Upload packages to PyPi server.
 # 
-upload-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_BDIST_WHL) 
+upload-pypi: $(DIST_DIR)/$(PYTHON_BDIST_WHL) $(DIST_DIR)/$(PYTHON_SDIST_ZIP) 
 	@$(UPLOAD_PYPI_CMD)
 
 #

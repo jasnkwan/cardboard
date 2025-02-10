@@ -164,8 +164,8 @@ def index():
     :return: rendered index.html template
     """
     development = FLASK_ENV == "development"
-    cardboard_server="http://127.0.0.1:5000"
-    return render_template("index.html", development=development, cardboard_server=cardboard_server)
+    flask_server="http://127.0.0.1:5000"
+    return render_template("index.html", development=development, flask_server=flask_server)
 
 
 @app.route('/src/<path:file>')
@@ -227,9 +227,9 @@ if __name__ == "__main__":
 
     <!-- Load the template data passed from the Flask server -->
     <script>
-      const cardboard_server = "{{cardboard_server}}"
+      const flask_server = "{{flask_server}}"
       const development = "{{development}}"
-      console.log("cardboard_server=" + cardboard_server)
+      console.log("flask_server=" + flask_server)
       console.log("development=" + development)
     </script>
 
@@ -271,11 +271,11 @@ import { Board } from 'cardboard-ui'
 import 'cardboard-ui/dist/style.css'
 
 // Get the root div by Id and render the cardboard React component into it.
-// Pass the cardboard_server template parameter (from the Flask server) to the Board component.
+// Pass the flask_server template parameter (from the Flask server) to the Board component.
 createRoot(document.getElementById('root')).render(
   <StrictMode>
   <div className="flex flex-col">
-      <Board cardboard_server={cardboard_server} />
+      <Board flask_server={flask_server} />
   </div>
   </StrictMode>,
 )

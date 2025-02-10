@@ -10,7 +10,7 @@ import axios from 'axios';
 import './index.css'
 import './Board.css';
 
-const Board = ({cardboard_server}) => {
+const Board = ({flask_server}) => {
 
     const [board, setBoard] = useState([]);
 
@@ -19,7 +19,7 @@ const Board = ({cardboard_server}) => {
         // fetch the card data from flask server
         const getBoard = async () => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    
@@ -49,7 +49,7 @@ const Board = ({cardboard_server}) => {
     return (
         <div className="cardboard">        
             {board && board.columns && board.columns.map((column, index) => (
-                <Column key={index} cardboard_server={cardboard_server} {...column} />
+                <Column key={index} flask_server={flask_server} {...column} />
             ))}
         </div>        
     )

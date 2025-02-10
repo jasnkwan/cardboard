@@ -4,57 +4,61 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Card Board</title>
+    <title>{{title}}</title>
   </head>
-  <body data-theme="cardboard">
+  <body>
     <div id="cardboard-root"></div>
+
+    <!-- Hidden input elements to store server and development values -->
+    <input type="hidden" id="flask_server" value="{{flask_server}}" />
+    <input type="hidden" id="vite_server" value="{{vite_server}}" />
+    <input type="hidden" id="development" value="{{development}}" />
+        
+    <!-- Load flask template data passed from flask server -->
     <script>
-      /*
-      let _CARDBOARD_SERVER = "{{cardboard_server}}";
-      if(!_CARDBOARD_SERVER || _CARDBOARD_SERVER == "{{cardboard_server}}" || _CARDBOARD_SERVER == "") {
-        _CARDBOARD_SERVER = "http://127.0.0.1:5000";
+      let flask_server = "{{flask_server}}";
+      if(flask_server == null || flask_server == undefined || flask_server == "") {
+        flask_server = "http://127.0.0.1:5555";
       }
-      const CARDBOARD_SERVER = _CARDBOARD_SERVER;
-      const cardboard_server = _CARDBOARD_SERVER;
-      const development = "{{development}}";
-      const main_js = "{{main_js}}"
-      */
-    </script>
 
-    <!-- Load the template data passed from the Flask server -->
-    <script>
-      const cardboard_server = "{{cardboard_server}}"
-      const development = "{{development}}"
-      console.log("cardboard_server=" + cardboard_server)
-      console.log("development=" + development)
-    </script>
+      let vite_server = "{{vite_server}}";
+      if(vite_server == null || vite_server == undefined || vite_server == "") {
+        vite_server = "http://localhost:5173"
+      }
 
-    <!-- Refer to Vite Backend Integration documentation:            -->
-    <!-- https://vite.dev/guide/backend-integration.html             -->
+      let development = "{{development}}";
+      if(development == null || development == undefined || development == "{{development}}") {
+        development = "true";
+      }
+
+      if(development == "false") {
+        let tags_json = "{{tags}}";
+
+        // Create a temporary DOM element to decode HTML
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = tags_json;
+        let unescaped_json = tempDiv.textContent || tempDiv.innerText;
+        let tags = JSON.parse(unescaped_json);
+      }
+    </script>
 
     {% if development %}
-
-    <!-- If development mode, setup proxying to the Vite dev server. -->
-    <!-- Make sure the Vite dev server is running on port 5173       -->
-    <script type="module">
-      console.log("DEV MODE!")
-      import RefreshRuntime from 'http://localhost:5173/@react-refresh'
-      RefreshRuntime.injectIntoGlobalHook(window)
-      window.$RefreshReg$ = () => {}
-      window.$RefreshSig$ = () => (type) => type
-      window.__vite_plugin_react_preamble_installed__ = true
-    </script>
-    <script type="module" src="http://localhost:5173/@vite/client"></script>
-    <script type="module" src="http://localhost:5173/src/main.jsx"></script>
-
+      <!-- if development mode, setup proxying to the vite dev server. -->
+      <!-- make sure the vite dev server is running on local port 5173 -->
+      <script type="module">
+        import RefreshRuntime from "{{vite_server}}/@react-refresh";
+        RefreshRuntime.injectIntoGlobalHook(window);
+        window.$ = () => {}
+        window.$ = () => (type) => type
+        window.__vite_plugin_react_preamble_installed__ = true
+      </script>
+      <script type="module" src="{{vite_server}}/@vite/client"></script>
+      <script type="module" src="{{vite_server}}/src/main.jsx"></script>
     {% else %}
-
-    <!-- If production mode, we serve the compiled assets from the flask server -->
-    <!-- Vite dev server does not need to be running                            -->
-    <script type="module" crossorigin src="/src/main.jsx"></script>
-    <link rel="stylesheet" crossorigin href="/src/main.css">
-
+      <!--if production mode, we serve the compiled assets from the flask server, vite dev server not needed. -->
+      {% for tag in tags %}
+        {{ tag | safe }}
+      {% endfor %}
     {% endif %}
-
   </body>
 </html>

@@ -6,7 +6,7 @@
 //import React from "react";
 import "./Card.css"
 
-const Card = ({ title, type, url, children, cardboard_server }) => {
+const Card = ({ title, type, url, children, flask_server }) => {
 
     return (
         <div className="card grow-card">

@@ -8,7 +8,13 @@ import json
 import threading
 from urllib.parse import urlparse
 import websockets
+import socket
 import time
+import struct
+import selectors
+import importlib
+import pkgutil
+import inspect
 
 
 def parse_websocket_url(url):
@@ -28,6 +34,41 @@ def parse_websocket_url(url):
     
     return hostname, port
 
+def import_providers(package_name):
+    """Find and load all subclasses of Producer and Consumer."""
+    discovered_plugins = {}
+    # Import the base package
+    package = importlib.import_module(package_name)
+    # Recursively find all submodules in the package
+    for finder, name, ispkg in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
+        module = importlib.import_module(name)
+        # Check for subclasses of Producer and Consumer
+        for attr_name in dir(module):
+            try:
+                attr = getattr(module, attr_name)    
+                if (inspect.isclass(attr) 
+                    and issubclass(attr, (SocketDataProvider)) 
+                    and attr not in (SocketDataProvider)):
+                    class_name = f"{module.__name__}.{attr_name}"
+                    discovered_plugins[class_name] = attr
+            except Exception as e:
+                print(f"{e}")
+        
+
+    return discovered_plugins
+
+def instantiate_provider(provider_classpath, package_providers):
+    class_name = f"{provider_classpath}" 
+    cls = package_providers[class_name]
+    if cls is not None:
+        try:
+            instance = cls()
+            #print(f"Instantiated instance of type {instance.type}: {class_name}")
+            return instance
+        except Exception as e:
+            print(f"Failed to instantiate {class_name}: {e}")
+    return None
+    
 
 class SocketDataProvider:
     def __init__(self, listener=None):
@@ -76,6 +117,61 @@ class TimeProvider(SocketDataProvider):
 
             time.sleep(1)
         print(f"Current time provider: done.")
+
+
+class UDPSocketProvider(SocketDataProvider):
+    def __init__(self, group_addr="232.10.11.12", port=3333, listener=None):
+        super().__init__(listener)
+
+        # create a socket and set options
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.socket.setblocking(False)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1048576)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1048576)
+        #self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_PRIORITY, 6)        
+        
+        self.group_addr = group_addr
+        self.port = int(port)
+
+        # bind udp socket to desired port on all network interfaces
+        self.socket.bind(("0.0.0.0", self.port))
+
+        # join the multicast group to receive data from clients
+        mreq = struct.pack("4sl", socket.inet_aton(self.group_addr), socket.INADDR_ANY)
+        self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        
+        # selector for processing events
+        self.sel = selectors.DefaultSelector()
+        self.sel.register(self.socket, selectors.EVENT_READ, data=None)
+        
+        # the socket thread
+        self.thread = None
+        
+        # running flag
+        self.running = False    
+
+    def _update_data(self):
+        while self.running:
+            # read data from udp socket and write to websocket
+            try:
+                events = self.sel.select(timeout=1)  # Block until at least one event is ready
+                for key, mask in events:
+                    
+                    if mask & selectors.EVENT_READ:
+                        
+                        # receive data from a client and forward to listeners
+                        data, addr = self.socket.recvfrom(4096)
+                        print(f"bytes received: {data} from {addr}")
+                        for listener in self.listeners:
+                            listener.on_socket_data(data)
+                            
+            except Exception as e:
+                print(f"Error in UDP selector receive: {e}")
+
+ 
+            pass
+        print(f"UDP socket provider: done.")
 
 
 class SocketDataListener:    

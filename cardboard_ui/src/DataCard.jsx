@@ -8,7 +8,7 @@ import './Card.css';
 import './DataCard.css';
 
 
-const DataCard = ({ title, type, url, groups, cardboard_server }) => {
+const DataCard = ({ title, type, url, groups, flask_server }) => {
 
     const [data, setData] = useState(groups);
     const [timestamp, setTimestamp] = useState("");
@@ -69,7 +69,7 @@ const DataCard = ({ title, type, url, groups, cardboard_server }) => {
  
         const startCard = async() => {
             try {  
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }     
@@ -85,7 +85,7 @@ const DataCard = ({ title, type, url, groups, cardboard_server }) => {
 
         const stopCard = async() => {
             try {
-                let server = cardboard_server         
+                let server = flask_server         
                 if(!server) {
                     server = "http://127.0.0.1:5000"
                 }    

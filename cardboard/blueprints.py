@@ -1,21 +1,65 @@
 from flask import Blueprint, jsonify, send_from_directory, render_template, current_app, request
 from cardboard.cardboard import start_card, stop_card
 from cardboard import cardboard
+from dotenv import load_dotenv
 import importlib.resources as pkg_resources
 import os
+import json
+
+
+
+load_dotenv()
+
+PROJECT_NAME = os.environ.get("PROJECT_NAME", default="chimera-app")
+
+FLASK_HOST = os.environ.get("FLASK_HOST", default="localhost")
+FLASK_PORT = int(os.environ.get("FLASK_PORT", default="5555"))
+FLASK_ENV = os.environ.get("FLASK_ENV", default="production")
+
+VITE_HOST = os.environ.get("VITE_HOST", default="localhost")
+VITE_PORT = int(os.environ.get("VITE_PORT", default="5173"))
+
+print(f"Environment:")
+print(f"  PROJECT_NAME={PROJECT_NAME}")
+print(f"  FLASK_ENV={FLASK_ENV}")
+print(f"  FLASK_HOST={FLASK_HOST}")
+print(f"  FLASK_PORT={FLASK_PORT}")
+print(f"  VITE_HOST={VITE_HOST}")
+print(f"  VITE_PORT={VITE_PORT}")
+
+manifest = None
+
+# Flask setup, serve static files from vite dist folder
+
+if FLASK_ENV == "development":
+    static_folder = f"../../frontend/{PROJECT_NAME}-ui"
+    template_folder = f"../../frontend/{PROJECT_NAME}-ui"
+else:
+    import importlib.resources as pkg_resources
+    from . import resources
+    from . import templates
+    static_folder = pkg_resources.files(resources)
+    template_folder = pkg_resources.files(templates)
+    static_folder = str(static_folder._paths[0])
+    template_folder = str(template_folder._paths[0])
+    with open(os.path.join(static_folder, ".vite", "manifest.json"), "r") as f:
+        manifest = json.load(f)
+
+
+
 
 # Load environment variables
-FLASK_ENV = os.environ.get("FLASK_ENV", default="production")
-CARDBOARD_FLASK_HOST = os.environ.get("CARDBOARD_FLASK_HOST", default="127.0.0.1")
-CARDBOARD_FLASK_PORT = int(os.environ.get("CARDBOARD_FLASK_PORT", default="5000"))
-CARDBOARD_STATIC_DIR = os.environ.get("CARDBOARD_STATIC_DIR", default="resources")
+#FLASK_ENV = os.environ.get("FLASK_ENV", default="production")
+#CARDBOARD_FLASK_HOST = os.environ.get("CARDBOARD_FLASK_HOST", default="127.0.0.1")
+#CARDBOARD_FLASK_PORT = int(os.environ.get("CARDBOARD_FLASK_PORT", default="5000"))
+#CARDBOARD_STATIC_DIR = os.environ.get("CARDBOARD_STATIC_DIR", default="resources")
 
-print(f"FLASK_ENV={FLASK_ENV}")
-if FLASK_ENV != "production":
-    CARDBOARD_STATIC_DIR = "../cardboard_ui"
+#print(f"FLASK_ENV={FLASK_ENV}")
+#if FLASK_ENV != "production":
+#    CARDBOARD_STATIC_DIR = "../cardboard_ui"
     
 
-cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  template_folder=CARDBOARD_STATIC_DIR, static_folder=CARDBOARD_STATIC_DIR, static_url_path='/')
+cardboard_blueprint = Blueprint('cardboard_blueprint', __name__,  template_folder=template_folder, static_folder=static_folder)
 
 
 def get_assets():
@@ -52,7 +96,7 @@ def serve_react_app():
     #return send_from_directory(cardboard_blueprint.static_folder, 'index.html')
     development = FLASK_ENV!="production"
     print(f"development={development}")
-    return render_template('index.html', cardboard_server=f"{request.scheme}://{CARDBOARD_FLASK_HOST}:{CARDBOARD_FLASK_PORT}", development=development)
+    return render_template('index.html', flask_server=f"{request.scheme}://{FLASK_HOST}:{FLASK_PORT}", development=development)
 
 
 '''

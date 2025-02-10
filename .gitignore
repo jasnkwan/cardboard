@@ -1,9 +1,11 @@
 .venv
 .idea
 .vscode
+.env
 **/.DS_Store
 **/__pycache__
 *.egg-info
 build
 dist
 cardboard/resources
+cardboard/templates

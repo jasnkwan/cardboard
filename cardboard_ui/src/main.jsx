@@ -5,6 +5,6 @@ import './index.css'
 
 createRoot(document.getElementById('cardboard-root')).render(
   <StrictMode>
-    <Board cardboard_server={cardboard_server}/>
+    <Board flask_server={flask_server}/>
   </StrictMode>,
 )
